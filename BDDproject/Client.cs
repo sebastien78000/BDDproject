@@ -8,6 +8,7 @@ using MySql.Data.MySqlClient;
 namespace BDDproject
 {
     // revoir si il y a des problemes de dépendances !!!!!!!!!!!!!!!!
+    // modifier pour integrer date adhesion
     public class Client
     {
 
@@ -16,14 +17,14 @@ namespace BDDproject
             MySqlConnection maConnexion = null;
             string connexionString = "SERVER=localhost;PORT=3306;" +
                                          "DATABASE=VeloMax;" +
-                                         "UID=root;PASSWORD=ma99seb00";
+                                         "UID=root;PASSWORD=root";
             maConnexion = new MySqlConnection(connexionString);
             maConnexion.Open();
             Console.WriteLine("entreprise(2) ou particulier(1)");
-            string choix = Console.ReadLine();
+            int choix = Convert.ToInt32(Console.ReadLine());
             switch (choix)
             {
-                case "1":
+                case 1:
 
                     Console.WriteLine("nom ?");
                     string nom = Console.ReadLine();
@@ -41,10 +42,10 @@ namespace BDDproject
                     string email = Console.ReadLine();
                     Console.WriteLine("Programme de fidélité");
                     string pfidélité = Console.ReadLine();
+                    
+                    string donnees = $"'{nom}','{prenom}','{rue}','{ville}','{codePostal}','{telephone}','{email}','{pfidélité}'";
 
-                    string donnees = $"{nom},{prenom},{rue},{ville},{codePostal},{telephone},{email},{pfidélité}";
-
-                    string requete = $"INSERT INTO `bdd`.`client` (`nom`, `prenom`, `rue`, `ville`, `codePostal`, `telephone`, `email`,'numeroProgramme') VALUES({donnees});";
+                    string requete = $"INSERT INTO `VeloMax`.`client` (`nom`, `prenom`, `rue`, `ville`, `codePostal`, `telephone`, `email`,'numeroProgramme') VALUES({donnees});";
                     MySqlCommand command = maConnexion.CreateCommand();
                     command.CommandText = requete;
                     MySqlDataReader reader = command.ExecuteReader();
@@ -52,7 +53,7 @@ namespace BDDproject
                     command.Dispose();
                     break;
 
-                case "2":
+                case 2:
 
                     Console.WriteLine("nom ?");
                     nom = Console.ReadLine();
@@ -73,9 +74,9 @@ namespace BDDproject
                     Console.WriteLine("remise commerciale ?");
                     string remise = Console.ReadLine();
 
-                    donnees = $"{nom},{prenom},{rue},{ville},{codePostal},{telephone},{email},{nomCompagnie},{remise}";
+                    donnees = $"'{nom}','{prenom}','{rue}','{ville}','{codePostal}','{telephone}','{email}','{nomCompagnie}','{remise}'";
 
-                    requete = $"INSERT INTO `bdd`.`client` (`nom`, `prenom`, `rue`, `ville`, `codePostal`, `telephone`, `email`,'nomCompagnie','remiseCommercialeCompagnie') VALUES({donnees});";
+                    requete = $"INSERT INTO `VeloMax`.`client` (`nom`, `prenom`, `rue`, `ville`, `codePostal`, `telephone`, `email`,'nomCompagnie','remiseCommercialeCompagnie') VALUES({donnees});";
                     command = maConnexion.CreateCommand();
                     command.CommandText = requete;
                     reader = command.ExecuteReader();
@@ -92,7 +93,7 @@ namespace BDDproject
             MySqlConnection maConnexion = null;
             string connexionString = "SERVER=localhost;PORT=3306;" +
                                          "DATABASE=VeloMax;" +
-                                         "UID=root;PASSWORD=ma99seb00";
+                                         "UID=root;PASSWORD=root";
             maConnexion = new MySqlConnection(connexionString);
             maConnexion.Open();
      
@@ -112,12 +113,12 @@ namespace BDDproject
         {
             Console.WriteLine("numero Client ?");
             string nClient = Console.ReadLine();
-            LireDataClient(nClient);
+            LireDataClient();
 
             MySqlConnection maConnexion = null;
             string connexionString = "SERVER=localhost;PORT=3306;" +
                                          "DATABASE=VeloMax;" +
-                                         "UID=root;PASSWORD=ma99seb00";
+                                         "UID=root;PASSWORD=root";
             maConnexion = new MySqlConnection(connexionString);
             maConnexion.Open();
             Console.WriteLine("individu(1) ou entreprise(2) ?");
@@ -338,17 +339,17 @@ namespace BDDproject
             
         }
 
-        public static void LireDataClient(string nClient)
+        public static void LireDataClient()
         {
             MySqlConnection maConnexion = null;
             string connexionString = "SERVER=localhost;PORT=3306;" +
                                          "DATABASE=VeloMax;" +
-                                         "UID=root;PASSWORD=ma99seb00";
+                                         "UID=root;PASSWORD=root";
 
             maConnexion = new MySqlConnection(connexionString);
             maConnexion.Open();
 
-            string requete = $"select * from veloMax.client where numeroCLient='{nClient}';";
+            string requete = $"select * from veloMax.client;";
             MySqlCommand command1 = maConnexion.CreateCommand();
             command1.CommandText = requete;
 
