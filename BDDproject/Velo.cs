@@ -68,7 +68,7 @@ namespace BDDproject
             string grandeur = "";
             while (!grandeurList.Contains(grandeur))
             {
-                Console.WriteLine("Siret ?");
+                Console.WriteLine("Grandeur ?");
                 grandeur = Console.ReadLine();
                 if (!grandeurList.Contains(grandeur)) Console.WriteLine("Le fournisseur ne fournit pas le modèle.\n");
             }
@@ -109,15 +109,21 @@ namespace BDDproject
 
             // comparer les deux listes: verifier si l'assemblage est possible
             bool assemblage = true;
-            for(int i =0;i<listePieceNecessaire.Count();i++)
+            for(int i=2;i<listePieceNecessaire.Count();i++)
             {
-                if(listePieceDispo.Contains(listePieceNecessaire[i])==false)
+                if (listePieceNecessaire[i]!="")
                 {
-                    Console.WriteLine("impossible d'assembler le velo: piece non disponible");
-                    assemblage = false;
-                    
+                    if (listePieceDispo.Contains(listePieceNecessaire[i]) == false)
+                    {
+                        Console.WriteLine(listePieceNecessaire[i]);
+                        Console.WriteLine("impossible d'assembler le velo: pieces non disponibles");
+                        assemblage = false;
+                    }
                 }
+                
             }
+
+            
 
             if(assemblage==true)
             {
@@ -127,7 +133,7 @@ namespace BDDproject
                 reader = command.ExecuteReader();
                 reader.Close();
                 command.Dispose();
-                donnees = $"{codeModeleVelo},'{grandeur}',false";
+                string donnees = $"{codeModeleVelo},'{grandeur}',false";
                 requete = $"INSERT INTO VeloMax.velo (numeroModele,grandeur,vendu) VALUES({donnees});";
                 command = maConnexion.CreateCommand();
                 command.CommandText = requete;
@@ -136,7 +142,7 @@ namespace BDDproject
                 command.Dispose();
 
                 // recuperer nouveau numero de velo
-                string numero = '';
+                string numero = "";
                 requete = $"SELECT max(numeroVelo) FROM VeloMax.velo;";
                 command = maConnexion.CreateCommand();
                 command.CommandText = requete;
@@ -149,14 +155,78 @@ namespace BDDproject
                 command.Dispose();
 
                 // assigner aux pieces le numero du velo
-                for(int i=0)
-                string requete = $"update VeloMax.fournisseur set fournisseur.nom='{modif}' where numeroSiret='{siret}'";
-                MySqlCommand command = maConnexion.CreateCommand();
-                command.CommandText = requete;
-                MySqlDataReader reader = command.ExecuteReader();
-                reader.Close();
-                command.Dispose();
+                for(int i=0;i<listePieceNecessaire.Count();i++)
+                {
+                    if(listePieceNecessaire[i]!="")
+                    {
+                        requete = $"update VeloMax.piece set piece.numeroVelo='{numero}' where numeroVelo is null and vendu=false and piece.codeModelePiece='{listePieceNecessaire[i]}' limit 1;";
+                        command = maConnexion.CreateCommand();
+                        command.CommandText = requete;
+                        reader = command.ExecuteReader();
+                        reader.Close();
+                        command.Dispose();
+                    }
+                    
+                }
+                
+
+                
             }
+
+
+        }
+
+        public static void SupprimerVelo()
+        // demonte un velo en liberant les pieces
+        {
+            string connexionString = "SERVER=localhost;PORT=3306;" +
+                                         "DATABASE=VeloMax;" +
+                                         "UID=root;PASSWORD=root";
+            MySqlConnection maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+            // Numero Velo
+            string requete = "SELECT numeroVelo FROM VeloMax.velo;";
+            MySqlCommand command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            MySqlDataReader reader = command.ExecuteReader();
+            List<string> codeNumeroVeloList = new List<string>();
+            string valueString;
+            while (reader.Read())
+            {
+                valueString = reader.GetValue(0).ToString();
+                codeNumeroVeloList.Add(valueString);
+            }
+            reader.Close();
+            command.Dispose();
+
+            for (int i = 0; i < codeNumeroVeloList.Count; i++)
+            {
+                Console.WriteLine(codeNumeroVeloList[i]);
+            }
+            string NumeroVelo = "";
+            while (!codeNumeroVeloList.Contains(NumeroVelo))
+            {
+                Console.WriteLine("Numero Velo ?");
+                NumeroVelo = Console.ReadLine();
+                if (!codeNumeroVeloList.Contains(NumeroVelo)) Console.WriteLine("Numero pas dans la liste.\n");
+            }
+
+            // Demonter le velo en piece
+            requete = $"update VeloMax.piece set piece.numeroVelo=null and piece.vendu=false where numeroVelo='{NumeroVelo}';";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            reader.Close();
+            command.Dispose();
+
+            //supprimer velo
+            requete = $"delete from velomax.velo where numeroVelo='{NumeroVelo}';";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            reader.Close();
+            command.Dispose();
+
 
 
         }

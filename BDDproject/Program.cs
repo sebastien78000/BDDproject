@@ -10,7 +10,8 @@ namespace BDDproject
     {
         static void Main(string[] args)
         {
-            Piece.AjouterPiece();
+
+
             Console.ReadKey();
         }
 
