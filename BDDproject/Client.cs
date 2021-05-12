@@ -7,9 +7,7 @@ using MySql.Data.MySqlClient;
 
 namespace BDDproject
 {
-    // revoir si il y a des problemes de dépendances !!!!!!!!!!!!!!!!
-    // modifier pour integrer date adhesion
-    public class Client
+    public static class Client
     {
 
         public static void CreerClient()
@@ -45,7 +43,7 @@ namespace BDDproject
                     
                     string donnees = $"'{nom}','{prenom}','{rue}','{ville}','{codePostal}','{telephone}','{email}','{pfidélité}'";
 
-                    string requete = $"INSERT INTO `VeloMax`.`client` (`nom`, `prenom`, `rue`, `ville`, `codePostal`, `telephone`, `email`,'numeroProgramme') VALUES({donnees});";
+                    string requete = $"INSERT INTO `VeloMax`.`client` (`nom`, `prenom`, `rue`, `ville`, `codePostal`, `telephone`, `email`,`numeroProgramme`) VALUES({donnees});";
                     MySqlCommand command = maConnexion.CreateCommand();
                     command.CommandText = requete;
                     MySqlDataReader reader = command.ExecuteReader();
@@ -76,7 +74,7 @@ namespace BDDproject
 
                     donnees = $"'{nom}','{prenom}','{rue}','{ville}','{codePostal}','{telephone}','{email}','{nomCompagnie}','{remise}'";
 
-                    requete = $"INSERT INTO `VeloMax`.`client` (`nom`, `prenom`, `rue`, `ville`, `codePostal`, `telephone`, `email`,'nomCompagnie','remiseCommercialeCompagnie') VALUES({donnees});";
+                    requete = $"INSERT INTO `VeloMax`.`client` (`nom`, `prenom`, `rue`, `ville`, `codePostal`, `telephone`, `email`,`nomCompagnie`,`remiseCommercialeCompagnie`) VALUES({donnees});";
                     command = maConnexion.CreateCommand();
                     command.CommandText = requete;
                     reader = command.ExecuteReader();
@@ -96,11 +94,13 @@ namespace BDDproject
                                          "UID=root;PASSWORD=root";
             maConnexion = new MySqlConnection(connexionString);
             maConnexion.Open();
-     
+
+            LireDataClient();
+
             Console.WriteLine("Supprimer client grace à son numero client");
             string nbClient = Console.ReadLine();
 
-            string requete = $"Delete from 'VeloMax'.'client' where 'client'.'numeroClient'={nbClient};";
+            string requete = $"delete from VeloMax.client where client.numeroClient='{nbClient}';";
             MySqlCommand command = maConnexion.CreateCommand();
             command.CommandText = requete;
             MySqlDataReader reader = command.ExecuteReader();
@@ -369,7 +369,6 @@ namespace BDDproject
             reader.Close();
             command1.Dispose();
         }
-
 
     }
 }

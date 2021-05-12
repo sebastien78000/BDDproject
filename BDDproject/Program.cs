@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 
 namespace BDDproject
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
-
+            Piece.AjouterPiece();
+            Console.ReadKey();
         }
 
         public static void test()
         {
-
+            Piece.AjouterPiece();
         }
     }
 }

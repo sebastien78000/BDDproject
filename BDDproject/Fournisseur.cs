@@ -7,9 +7,8 @@ using MySql.Data.MySqlClient;
 
 namespace BDDproject
 {
-    class Fournisseur
+    public static class Fournisseur
     {
-
 
         public static void CreerFournisseur()
         {
@@ -40,7 +39,7 @@ namespace BDDproject
 
             string donnees = $"'{siret}','{nom}','{telephone}','{email}','{rue}','{ville}','{codePostal}','{libelle}'";
 
-            string requete = $"INSERT INTO `VeloMax`.`client` (`siret`, `nom`, `telephone`, `email`, `rue`, `ville`, `codePostal`,'libelle') VALUES({donnees});";
+            string requete = $"INSERT INTO `VeloMax`.`fournisseur` (`numeroSiret`, `nom`, `telephone`, `email`, `rue`, `ville`, `codePostal`, `libelle`) VALUES({donnees});";
             MySqlCommand command = maConnexion.CreateCommand();
             command.CommandText = requete;
             MySqlDataReader reader = command.ExecuteReader();
@@ -63,7 +62,7 @@ namespace BDDproject
             Console.WriteLine("Supprimer fournisseur");
             string numeroSiret = Console.ReadLine();
 
-            string requete = $"Delete from VeloMax.fournisseur where fournissseur.numeroSiret='{numeroSiret}';";
+            string requete = $"Delete from VeloMax.fournisseur where fournisseur.numeroSiret='{numeroSiret}';";
             MySqlCommand command = maConnexion.CreateCommand();
             command.CommandText = requete;
             MySqlDataReader reader = command.ExecuteReader();
@@ -114,6 +113,8 @@ namespace BDDproject
             maConnexion = new MySqlConnection(connexionString);
             maConnexion.Open();
 
+            LireDataFournisseur();
+
             Console.WriteLine("siret ?");
             string siret = Console.ReadLine();
 
@@ -132,7 +133,7 @@ namespace BDDproject
                 case 1:
                     Console.WriteLine("entrer modification");
                     modif = Console.ReadLine();
-                    string requete = $"update VeloMax.fournisseur set client.nom='{modif}' where numeroSiret='{siret}'";
+                    string requete = $"update VeloMax.fournisseur set fournisseur.nom='{modif}' where numeroSiret='{siret}'";
                     MySqlCommand command = maConnexion.CreateCommand();
                     command.CommandText = requete;
                     MySqlDataReader reader = command.ExecuteReader();
@@ -142,7 +143,7 @@ namespace BDDproject
                 case 2:
                     Console.WriteLine("entrer modification");
                     modif = Console.ReadLine();
-                    requete = $"update VeloMax.fournisseur set client.telephone='{modif}' where numeroSiret='{siret}";
+                    requete = $"update VeloMax.fournisseur set fournisseur.telephone='{modif}' where numeroSiret='{siret}";
                     command = maConnexion.CreateCommand();
                     command.CommandText = requete;
                     reader = command.ExecuteReader();
@@ -152,7 +153,7 @@ namespace BDDproject
                 case 3:
                     Console.WriteLine("entrer modification");
                     modif = Console.ReadLine();
-                    requete = $"update VeloMax.fournisseur set client.email='{modif}' where numeroSiret='{siret}'";
+                    requete = $"update VeloMax.fournisseur set fournisseur.email='{modif}' where numeroSiret='{siret}'";
                     command = maConnexion.CreateCommand();
                     command.CommandText = requete;
                     reader = command.ExecuteReader();
@@ -162,7 +163,7 @@ namespace BDDproject
                 case 4:
                     Console.WriteLine("entrer modification");
                     modif = Console.ReadLine();
-                    requete = $"update VeloMax.fournisseur set client.rue='{modif}' where numeroSiret='{siret}'";
+                    requete = $"update VeloMax.fournisseur set fournisseur.rue='{modif}' where numeroSiret='{siret}'";
                     command = maConnexion.CreateCommand();
                     command.CommandText = requete;
                     reader = command.ExecuteReader();
@@ -172,7 +173,7 @@ namespace BDDproject
                 case 5:
                     Console.WriteLine("entrer modification");
                     modif = Console.ReadLine();
-                    requete = $"update VeloMax.fournisseur set client.ville'{modif}' where numeroSiret='{siret}'";
+                    requete = $"update VeloMax.fournisseur set fournisseur.ville'{modif}' where numeroSiret='{siret}'";
                     command = maConnexion.CreateCommand();
                     command.CommandText = requete;
                     reader = command.ExecuteReader();
@@ -182,7 +183,7 @@ namespace BDDproject
                 case 6:
                     Console.WriteLine("entrer modification");
                     modif = Console.ReadLine();
-                    requete = $"update VeloMax.fournisseur set client.codePostal='{modif}' where numeroSiret='{siret}";
+                    requete = $"update VeloMax.fournisseur set fournisseur.codePostal='{modif}' where numeroSiret='{siret}";
                     command = maConnexion.CreateCommand();
                     command.CommandText = requete;
                     reader = command.ExecuteReader();
@@ -192,7 +193,7 @@ namespace BDDproject
                 case 7:
                     Console.WriteLine("entrer modification");
                     modif = Console.ReadLine();
-                    requete = $"update VeloMax.fournisseur set client.libelle='{modif}' where numeroSiret='{siret}";
+                    requete = $"update VeloMax.fournisseur set fournisseur.libelle='{modif}' where numeroSiret='{siret}";
                     command = maConnexion.CreateCommand();
                     command.CommandText = requete;
                     reader = command.ExecuteReader();
