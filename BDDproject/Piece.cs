@@ -107,6 +107,89 @@ namespace BDDproject
             command.Dispose();
         }
 
+        public static void AjouterPieceSansChoixCodeModele(string codeModelePiece)
+        {
+            Console.WriteLine("Piece: " + codeModelePiece);
+            string connexionString = "SERVER=localhost;PORT=3306;" +
+                                         "DATABASE=VeloMax;" +
+                                         "UID=root;PASSWORD=root";
+            MySqlConnection maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+            // Siret
+            string requete = $"SELECT numeroSiretFournisseur,libelle FROM VeloMax.fournisseur_modelePiece join VeloMax.fournisseur on fournisseur.numeroSiret=fournisseur_modelepiece.numeroSiretFournisseur where codeModelePiece = '{codeModelePiece}';";
+            MySqlCommand command = maConnexion.CreateCommand();
+            command.CommandText = requete;            
+            MySqlDataReader reader = command.ExecuteReader();
+            string[] valuesString = new string[reader.FieldCount];
+            List<string[]> siretList = new List<string[]>();
+            while (reader.Read())
+            {
+                valuesString = new string[reader.FieldCount];
+                for (int i=0;i<reader.FieldCount;i++)
+                {
+                    valuesString[i] = reader.GetValue(i).ToString();
+                    
+                }
+                siretList.Add(valuesString);
+            }
+            reader.Close();
+            command.Dispose();
+            Console.WriteLine("Numéros Siret des fournisseurs et libelle du fournisseur pour la pièce sélectionnée:");
+            for (int i = 0; i < siretList.Count; i++)
+            {
+                Console.WriteLine(siretList[i][0] +" "+ siretList[i][1]);
+            }
+            string siret = "";
+            
+            bool test = false;
+            while(test==false)
+            {
+                Console.WriteLine("Siret ?");
+                siret = Console.ReadLine();
+                for (int i = 0; i < siretList.Count; i++)
+                {
+                    if (siretList[i][0] == siret) test = true;
+                }
+                if (test == false) Console.WriteLine("Siret incorrect");
+            }
+            
+            // Numéro Série
+            requete = $"SELECT numeroSerie FROM VeloMax.piece where codeModelePiece = '{codeModelePiece}' and numeroSiretFournisseur = '{siret}';";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            string valueString = "";
+            List<string> noSerieList = new List<string>();
+            while (reader.Read())
+            {
+                valueString = reader.GetValue(0).ToString();
+                noSerieList.Add(valueString);
+            }
+            reader.Close();
+            command.Dispose();
+            Console.WriteLine("Numéros série déjà utilisés pour ce modèle et ce fournisseur :");
+            for (int i = 0; i < noSerieList.Count; i++)
+            {
+                Console.WriteLine(noSerieList[i]);
+            }
+
+            string noSerie = "";
+            while (noSerieList.Contains(noSerie) || noSerie == "")
+            {
+                Console.WriteLine("noSerie ?");
+                noSerie = Console.ReadLine();
+                if (noSerieList.Contains(noSerie)) Console.WriteLine("Ce numéro est déjà utilisé, veuillez en sélectionner un autre\n");
+            }
+            // Ajouter pièce
+            string donnees = $"'{noSerie}','{codeModelePiece}','{siret}'";
+            requete = $"INSERT INTO VeloMax.piece (numeroSerie, codeModelePiece, numeroSiretFournisseur) VALUES({donnees});";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            reader.Close();
+            command.Dispose();
+        }
+
         public static void SupprimerPiece()
         {
             // Connection

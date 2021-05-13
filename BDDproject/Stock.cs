@@ -158,5 +158,109 @@ namespace BDDproject
             reader.Close();
             command.Dispose();
         }
+
+        public static void AnalyserStockEtCreerPieceFaibleQuantite()
+        // cree des pieces lorsque le compte de pieces en stock est trop faible
+        // considere pieces faibles quand nb pieces dispo est égale à 0 ou 1
+        {
+            string connexionString = "SERVER=localhost;PORT=3306;" +
+                                       "DATABASE=VeloMax;" +
+                                       "UID=root;PASSWORD=root";
+            
+            // Pieces en stock
+            MySqlConnection maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+            string requete = "SELECT codeModelePiece,count(codeModelePiece) FROM VeloMax.piece where piece.vendu=false and piece.numeroVelo is null group by codeModelePiece;";
+            MySqlCommand command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            MySqlDataReader reader = command.ExecuteReader();
+            List<string[]> pieceList = new List<string[]>();
+            string[] valuesString = new string[reader.FieldCount];
+            while (reader.Read())
+            {
+                valuesString = new string[reader.FieldCount];
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    valuesString[i] = reader.GetValue(i).ToString();
+                }
+                pieceList.Add(valuesString);
+            }
+            reader.Close();
+            command.Dispose();
+
+            //modele piece existante
+            maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+            requete = "SELECT codeModelePiece FROM VeloMax.modelepiece;";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            List<string> CodeModele = new List<string>();
+            string valueString = "";
+            while (reader.Read())
+            {
+                valueString = reader.GetValue(0).ToString();
+                CodeModele.Add(valueString);
+            }
+            reader.Close();
+            command.Dispose();
+
+            //obtenir liste des pieces à commander
+            List<string> pieceAcommander = new List<string>();
+            for(int i=0;i<pieceList.Count();i++)
+            {
+                if(CodeModele.Contains(pieceList[i][0])==true)
+                {
+                    if (Convert.ToInt32(pieceList[i][1]) == 1)
+                    {
+                        pieceAcommander.Add(pieceList[i][0]);
+                    }
+                    else
+                    {
+                        Console.WriteLine(pieceList[i][0] + " existe en quantité suffisante dans le stock");
+                    }
+                }
+                
+            }
+            for(int i=0;i<CodeModele.Count();i++)
+            {
+                bool test = false;
+                for(int j=0;j<pieceList.Count();j++)
+                {
+                    if (CodeModele[i] == pieceList[j][0]) test = true;
+                }
+                if (test==false)
+                {
+                    pieceAcommander.Add(CodeModele[i]);
+                    pieceAcommander.Add(CodeModele[i]);
+                }
+            }
+
+
+            //lecture de la liste des pieces à commander
+            Console.WriteLine("Pieces à commander:");
+            for(int i=0;i<pieceAcommander.Count();i++)
+            {
+                Console.WriteLine(pieceAcommander[i]);
+            }
+
+            
+
+            // creer pieces manquantes
+            for(int i=0;i<pieceAcommander.Count();i++)
+            {
+                Piece.AjouterPieceSansChoixCodeModele(pieceAcommander[i]);
+            }
+
+            
+
+        }
+
+
+
+
+
+
+
     }
 }
