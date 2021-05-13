@@ -7,6 +7,7 @@ using MySql.Data.MySqlClient;
 
 namespace BDDproject
 {
+    // Les stocks pour les velos ne prennent en compte que les vélos montés !!!!!!!!!!!!
     public static class Stock
     {
         public static void StockPieces()
@@ -48,7 +49,7 @@ namespace BDDproject
 
             MySqlConnection maConnexion = new MySqlConnection(connexionString);
             maConnexion.Open();
-            // obtenir numero fournisseur
+            // obtenir numeros fournisseur
             string requete = "select distinct(numeroSiretFournisseur) from veloMax.piece;";
             MySqlCommand command = maConnexion.CreateCommand();
             command.CommandText = requete;
@@ -108,6 +109,37 @@ namespace BDDproject
             maConnexion.Open();
             // Code Modele velo
             string requete = "SELECT nom,modelevelo.grandeur FROM VeloMax.velo join VeloMax.modeleVelo on velo.numeroModele=modelevelo.numeroModele where velo.vendu=false;";
+            MySqlCommand command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            MySqlDataReader reader = command.ExecuteReader();
+            List<string> codeModeleVeloList = new List<string>();
+            string[] valueString = new string[reader.FieldCount];
+            while (reader.Read())
+            {
+
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    valueString[i] = reader.GetValue(i).ToString();
+                    Console.Write(valueString[i] + " ");
+                }
+                Console.WriteLine();
+            }
+            reader.Close();
+            command.Dispose();
+        }
+
+
+
+        public static void StockVeloCategorie() 
+        //nb velos en fonction de leur ligne produit
+        {
+            string connexionString = "SERVER=localhost;PORT=3306;" +
+                                        "DATABASE=VeloMax;" +
+                                        "UID=root;PASSWORD=root";
+            MySqlConnection maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+            // Code Modele velo
+            string requete = "SELECT ligneProduit,count(ligneProduit) FROM VeloMax.velo join VeloMax.modeleVelo on velo.numeroModele=modelevelo.numeroModele where velo.vendu=false group by ligneProduit;";
             MySqlCommand command = maConnexion.CreateCommand();
             command.CommandText = requete;
             MySqlDataReader reader = command.ExecuteReader();

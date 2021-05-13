@@ -70,7 +70,7 @@ namespace BDDproject
             {
                 Console.WriteLine("Grandeur ?");
                 grandeur = Console.ReadLine();
-                if (!grandeurList.Contains(grandeur)) Console.WriteLine("Le fournisseur ne fournit pas le modèle.\n");
+                if (!grandeurList.Contains(grandeur)) Console.WriteLine("Cette grandeur n'existe pas.\n");
             }
 
             // obtenir liste des pieces du modele
@@ -115,9 +115,9 @@ namespace BDDproject
                 {
                     if (listePieceDispo.Contains(listePieceNecessaire[i]) == false)
                     {
-                        Console.WriteLine(listePieceNecessaire[i]);
                         Console.WriteLine("impossible d'assembler le velo: pieces non disponibles");
                         assemblage = false;
+                        break;
                     }
                 }
                 
@@ -258,6 +258,135 @@ namespace BDDproject
             }
             reader.Close();
             command1.Dispose();
+        }
+
+        public static void ModifierVelo()
+        // modifier modele velo
+        {
+            // verifié si modele velo et grandeur fourni existe
+
+
+            string connexionString = "SERVER=localhost;PORT=3306;" +
+                                         "DATABASE=VeloMax;" +
+                                         "UID=root;PASSWORD=root";
+            MySqlConnection maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+            // Code Modele velo
+            string requete = "SELECT numeroModele FROM VeloMax.modelevelo;";
+            MySqlCommand command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            MySqlDataReader reader = command.ExecuteReader();
+            List<string> codeModeleVeloList = new List<string>();
+            string valueString;
+            while (reader.Read())
+            {
+                valueString = reader.GetValue(0).ToString();
+                codeModeleVeloList.Add(valueString);
+            }
+            reader.Close();
+            command.Dispose();
+
+            for (int i = 0; i < codeModeleVeloList.Count; i++)
+            {
+                Console.WriteLine(codeModeleVeloList[i]);
+            }
+            string codeModeleVelo = "";
+            while (!codeModeleVeloList.Contains(codeModeleVelo))
+            {
+                Console.WriteLine("Numero Modele Velo ?");
+                codeModeleVelo = Console.ReadLine();
+                if (!codeModeleVeloList.Contains(codeModeleVelo)) Console.WriteLine("Numero pas dans la liste.\n");
+            }
+
+            // grandeur
+            requete = $"SELECT grandeur FROM VeloMax.modeleVelo where numeroModele = '{codeModeleVelo}';";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            List<string> grandeurList = new List<string>();
+            while (reader.Read())
+            {
+                valueString = reader.GetValue(0).ToString();
+                grandeurList.Add(valueString);
+            }
+            reader.Close();
+            command.Dispose();
+            Console.WriteLine($"Grandeurs pour le numero de modele {codeModeleVelo} :");
+            for (int i = 0; i < grandeurList.Count; i++)
+            {
+                Console.WriteLine(grandeurList[i]);
+            }
+
+            string grandeur = "";
+            while (!grandeurList.Contains(grandeur))
+            {
+                Console.WriteLine("Grandeur ?");
+                grandeur = Console.ReadLine();
+                if (!grandeurList.Contains(grandeur)) Console.WriteLine("Cette grandeur n'existe pas.\n");
+            }
+
+            Console.WriteLine("Que voulez vous modifier ?\n" +
+                        "ligne produit (1)\n" +
+                        "nom (2)\n" +
+                        "prix unitaire (3)\n" +
+                        "date Introduction (4)\n" +
+                        "date Discontinuation (5)\n");
+            string modif = "";
+            int modification = Convert.ToInt32(Console.ReadLine());
+            switch (modification)
+            {
+                case 1:
+                    Console.WriteLine("entrer modification");
+                    modif = Console.ReadLine();
+                    requete = $"update VeloMax.modelevelo set modelevelo.ligneProduit='{modif}' where numeroModele='{codeModeleVelo}' and grandeur='{grandeur}';";
+                    command = maConnexion.CreateCommand();
+                    command.CommandText = requete;
+                    reader = command.ExecuteReader();
+                    reader.Close();
+                    command.Dispose();
+                    break;
+                case 2:
+                    Console.WriteLine("entrer modification");
+                    modif = Console.ReadLine();
+                    requete = $"update VeloMax.modelevelo set modelevelo.nom='{modif}' where numeroModele='{codeModeleVelo}' and grandeur='{grandeur}';";
+                    command = maConnexion.CreateCommand();
+                    command.CommandText = requete;
+                    reader = command.ExecuteReader();
+                    reader.Close();
+                    command.Dispose();
+                    break;
+                case 3:
+                    Console.WriteLine("entrer modification");
+                    modif = Console.ReadLine();
+                    requete = $"update VeloMax.modelevelo set modelevelo.prixUnitaire='{modif}' where numeroModele='{codeModeleVelo}' and grandeur='{grandeur}';";
+                    command = maConnexion.CreateCommand();
+                    command.CommandText = requete;
+                    reader = command.ExecuteReader();
+                    reader.Close();
+                    command.Dispose();
+                    break;
+                case 4:
+                    Console.WriteLine("entrer modification");
+                    modif = Console.ReadLine();
+                    requete = $"update VeloMax.modelevelo set modelevelo.dateIntroduction='{modif}' where numeroModele='{codeModeleVelo}' and grandeur='{grandeur}';";
+                    command = maConnexion.CreateCommand();
+                    command.CommandText = requete;
+                    reader = command.ExecuteReader();
+                    reader.Close();
+                    command.Dispose();
+                    break;
+                case 5:
+                    Console.WriteLine("entrer modification");
+                    modif = Console.ReadLine();
+                    requete = $"update VeloMax.modelevelo set modelevelo.dateDiscontinuation'{modif}' where numeroModele='{codeModeleVelo}' and grandeur='{grandeur}';";
+                    command = maConnexion.CreateCommand();
+                    command.CommandText = requete;
+                    reader = command.ExecuteReader();
+                    reader.Close();
+                    command.Dispose();
+                    break;
+                
+            }
         }
 
 

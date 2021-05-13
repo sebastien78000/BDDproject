@@ -11,7 +11,7 @@ namespace BDDproject
         static void Main(string[] args)
         {
 
-            Stock.StockVelos();
+            Statistique.dateExpirationProgrammesFideliteParClient();
 
             Console.ReadKey();
         }
