@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 namespace BDDproject
 {
-    // Les stocks pour les velos ne prennent en compte que les vélos montés !!!!!!!!!!!!
+    // Les stocks pour les velos ne prennent en compte que les vélos deja assemblés !!!!!!!!!!!!
     public static class Stock
     {
         public static void StockPieces()
@@ -23,7 +23,6 @@ namespace BDDproject
             MySqlCommand command = maConnexion.CreateCommand();
             command.CommandText = requete;
             MySqlDataReader reader = command.ExecuteReader();
-            List<string> codeModeleVeloList = new List<string>();
             string[] valueString = new string[reader.FieldCount];
             Console.WriteLine("Piece | Code modele piece");
             while (reader.Read())
@@ -127,8 +126,6 @@ namespace BDDproject
             reader.Close();
             command.Dispose();
         }
-
-
 
         public static void StockVeloCategorie() 
         //nb velos en fonction de leur ligne produit
@@ -256,7 +253,30 @@ namespace BDDproject
 
         }
 
-
+        public static List<string> PiecesDisponibles()
+        {
+            string connexionString = "SERVER=localhost;PORT=3306;" +
+                                        "DATABASE=VeloMax;" +
+                                        "UID=root;PASSWORD=root";
+            MySqlConnection maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+            // pieces dispo dans stock
+            string requete = "SELECT codeModelePiece FROM VeloMax.piece where piece.vendu=false and piece.numeroVelo is null group by codeModelePiece;";
+            MySqlCommand command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            MySqlDataReader reader = command.ExecuteReader();
+            List<string> piecesDisponibles = new List<string>();
+            string valueString = "";
+            Console.WriteLine("Piece | Code modele piece");
+            while (reader.Read())
+            {
+                valueString = reader.GetValue(0).ToString();
+                piecesDisponibles.Add(valueString);
+            }
+            reader.Close();
+            command.Dispose();
+            return piecesDisponibles;
+        }
 
 
 

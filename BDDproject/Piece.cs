@@ -231,7 +231,34 @@ namespace BDDproject
             command1.Dispose();
         }
 
+
+        public static List<string> PieceExistante() //à tester
+        // retourne la liste des pieces existantes dans le catalogue
+        {
+            string connexionString = "SERVER=localhost;PORT=3306;" +
+                                         "DATABASE=VeloMax;" +
+                                         "UID=root;PASSWORD=root";
+            MySqlConnection maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+            string requete = "SELECT codeModelePiece FROM VeloMax.modelepiece;";
+            MySqlCommand command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            MySqlDataReader reader = command.ExecuteReader();
+            List<string> pieceListPossible = new List<string>();
+            string valueString = "";
+            while (reader.Read())
+            {
+                valueString = reader.GetValue(0).ToString();
+                pieceListPossible.Add(valueString);
+            }
+            reader.Close();
+            command.Dispose();
+            return pieceListPossible;
+        }
+
         
+
+
         public static void LireDataPieceDispo()
         // renvoie le code modele piece des pieces disponiblers en stock
         {

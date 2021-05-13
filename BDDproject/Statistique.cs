@@ -65,7 +65,6 @@ namespace BDDproject
             command.Dispose();
         }
 
-
         public static void ListeMembreProgrammeAdhesion()
         // affiche tous les membres a
         {
@@ -96,7 +95,7 @@ namespace BDDproject
             command.Dispose();
         }
 
-        public static void dateExpirationProgrammesFideliteParClient()
+        public static void DateExpirationProgrammesFideliteParClient()
         // renvoie chaque membre du programme de fidelite avec son prenom,son nom, la date d'adhesion et la date d'expiration de son programme
         {
             string connexionString = "SERVER=localhost;PORT=3306;" +

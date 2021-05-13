@@ -128,11 +128,7 @@ namespace BDDproject
             if(assemblage==true)
             {
                 // creer le nouveau velo
-                command = maConnexion.CreateCommand();
-                command.CommandText = requete;
-                reader = command.ExecuteReader();
-                reader.Close();
-                command.Dispose();
+                
                 string donnees = $"{codeModeleVelo},'{grandeur}',false";
                 requete = $"INSERT INTO VeloMax.velo (numeroModele,grandeur,vendu) VALUES({donnees});";
                 command = maConnexion.CreateCommand();
@@ -260,7 +256,7 @@ namespace BDDproject
             command1.Dispose();
         }
 
-        public static void ModifierVelo()
+        public static void ModifierVelo()//à tester
         // modifier modele velo
         {
             // verifié si modele velo et grandeur fourni existe
@@ -422,6 +418,218 @@ namespace BDDproject
         }
 
         
+        public static bool PossibilititéAssemblerVelo(string codeModeleVelo, string grandeur)//à tester
+        // renvoie true si le velo peut etre assemblé sinon renvoie faux
+        {
+            MySqlConnection maConnexion = null;
+            string connexionString = "SERVER=localhost;PORT=3306;" +
+                                         "DATABASE=VeloMax;" +
+                                         "UID=root;PASSWORD=root";
 
+            maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+
+            string requete = $"SELECT * FROM VeloMax.listeassemblage WHERE numeroModele='{codeModeleVelo}' and grandeur='{grandeur}';";
+            MySqlCommand command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            MySqlDataReader reader = command.ExecuteReader();
+            List<string> listePieceNecessaire = new List<string>();
+            string[] valuesString = new string[reader.FieldCount];
+            while (reader.Read())
+            {
+
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    valuesString[i] = reader.GetValue(i).ToString();
+                    listePieceNecessaire.Add(valuesString[i]);
+                }
+            }
+            reader.Close();
+            command.Dispose();
+
+            // obtenir liste des pieces disponibles en stock
+            requete = $"SELECT codeModelePiece FROM VeloMax.piece WHERE numeroVelo is null and vendu=false;";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            List<string> listePieceDispo = new List<string>();
+            string valueString = "";
+            while (reader.Read())
+            {
+                valueString = reader.GetValue(0).ToString();
+                listePieceDispo.Add(valueString);
+            }
+            reader.Close();
+            command.Dispose();
+
+            // comparer les deux listes: verifier si l'assemblage est possible
+            bool assemblage = true;
+            for (int i = 2; i < listePieceNecessaire.Count(); i++)
+            {
+                if (listePieceNecessaire[i] != "")
+                {
+                    if (listePieceDispo.Contains(listePieceNecessaire[i]) == false)
+                    {
+                        Console.WriteLine("impossible d'assembler le velo: pieces non disponibles");
+                        assemblage = false;
+                        break;
+                    }
+                }
+
+            }
+            return assemblage;
+
+        }
+
+        public static void AssemblerVelo(string codeModeleVelo,string grandeur)
+        {
+            MySqlConnection maConnexion = null;
+            string connexionString = "SERVER=localhost;PORT=3306;" +
+                                         "DATABASE=VeloMax;" +
+                                         "UID=root;PASSWORD=root";
+
+            maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+            // creer le nouveau velo
+            
+            string donnees = $"{codeModeleVelo},'{grandeur}',true";
+            string requete = $"INSERT INTO VeloMax.velo (numeroModele,grandeur,vendu) VALUES({donnees});";
+            MySqlCommand command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            MySqlDataReader reader = command.ExecuteReader();
+            reader.Close();
+            command.Dispose();
+
+            // recuperer nouveau numero de velo
+            string numero = "";
+            requete = $"SELECT max(numeroVelo) FROM VeloMax.velo;";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                numero = reader.GetValue(0).ToString();
+            }
+            reader.Close();
+            command.Dispose();
+
+            // obtenir liste des pieces du modele
+            requete = $"SELECT * FROM VeloMax.listeassemblage WHERE numeroModele='{codeModeleVelo}' and grandeur='{grandeur}';";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            List<string> listePieceNecessaire = new List<string>();
+            string[] valuesString = new string[reader.FieldCount];
+            while (reader.Read())
+            {
+
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    valuesString[i] = reader.GetValue(i).ToString();
+                    listePieceNecessaire.Add(valuesString[i]);
+                }
+            }
+            reader.Close();
+            command.Dispose();
+
+            // assigner aux pieces le numero du velo
+            for (int i = 0; i < listePieceNecessaire.Count(); i++)
+            {
+                if (listePieceNecessaire[i] != "")
+                {
+                    requete = $"update VeloMax.piece set piece.numeroVelo='{numero}' and piece.vendu=true where numeroVelo is null and vendu=false and piece.codeModelePiece='{listePieceNecessaire[i]}' limit 1;";
+                    command = maConnexion.CreateCommand();
+                    command.CommandText = requete;
+                    reader = command.ExecuteReader();
+                    reader.Close();
+                    command.Dispose();
+                }
+
+            }
+        }//à tester
+
+        public static string TempsNecessairePieceManquanteAssemblageVelo(string codeModeleVelo,string grandeur)
+        {
+            MySqlConnection maConnexion = null;
+            string connexionString = "SERVER=localhost;PORT=3306;" +
+                                         "DATABASE=VeloMax;" +
+                                         "UID=root;PASSWORD=root";
+
+            maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+
+            string requete = $"SELECT * FROM VeloMax.listeassemblage WHERE numeroModele='{codeModeleVelo}' and grandeur='{grandeur}';";
+            MySqlCommand command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            MySqlDataReader reader = command.ExecuteReader();
+            List<string> listePieceNecessaire = new List<string>();
+            string[] valuesString = new string[reader.FieldCount];
+            while (reader.Read())
+            {
+
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    valuesString[i] = reader.GetValue(i).ToString();
+                    listePieceNecessaire.Add(valuesString[i]);
+                }
+            }
+            reader.Close();
+            command.Dispose();
+
+            // obtenir liste des pieces disponibles en stock
+            maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+            requete = $"SELECT codeModelePiece FROM VeloMax.piece WHERE numeroVelo is null and vendu=false;";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            List<string> listePieceDispo = new List<string>();
+            string valueString = "";
+            while (reader.Read())
+            {
+                valueString = reader.GetValue(0).ToString();
+                listePieceDispo.Add(valueString);
+            }
+            reader.Close();
+            command.Dispose();
+
+            // comparer les deux listes: obtenir pieces manquantes
+            List<string> PieceManquante = new List<string>();
+            for (int i = 2; i < listePieceNecessaire.Count(); i++)
+            {
+                if (listePieceNecessaire[i] != "")
+                {
+                    if (listePieceDispo.Contains(listePieceNecessaire[i]) == false)
+                    {
+                        PieceManquante.Add(listePieceNecessaire[i]);
+                    }
+                }
+
+            }
+
+            int tempsMin = 10000000;
+            for (int i=0;i<PieceManquante.Count();i++)
+            {
+                maConnexion = new MySqlConnection(connexionString);
+                maConnexion.Open();
+                requete =  $"SELECT min(delaiJoursApprovisionnement) from velomax.fournisseur_modelepiece where codeModelePiece='{PieceManquante[i]}';"; ;
+                command = maConnexion.CreateCommand();
+                command.CommandText = requete;
+                reader = command.ExecuteReader();
+                valueString = "";
+                while (reader.Read())
+                {
+                    valueString = reader.GetValue(0).ToString();
+                }
+                int temps = Convert.ToInt32(valueString);
+                if (temps < tempsMin) tempsMin = temps;
+                reader.Close();
+                command.Dispose();
+            }
+
+            return Convert.ToString(tempsMin);
+
+
+        }//à tester
     }
 }
