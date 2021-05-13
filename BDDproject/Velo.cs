@@ -167,17 +167,14 @@ namespace BDDproject
                         command.Dispose();
                     }
                     
-                }
-                
-
-                
+                }               
             }
 
 
         }
 
         public static void SupprimerVelo()
-        // demonte un velo en liberant les pieces
+        // demonte un velo en liberant les pieces (possible seulement si le velo n est pas dans une commande)
         {
             string connexionString = "SERVER=localhost;PORT=3306;" +
                                          "DATABASE=VeloMax;" +

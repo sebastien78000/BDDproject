@@ -160,7 +160,7 @@ namespace BDDproject
             maConnexion = new MySqlConnection(connexionString);
             maConnexion.Open();
 
-            string requete = $"SELECT codeModelePiece FROM VeloMax.piece WHERE numeroVelo is null and vendu=false;";
+            string requete = $"SELECT codeModelePiece FROM VeloMax.piece WHERE numeroVelo is null and piece.vendu=false;";
             MySqlCommand command1 = maConnexion.CreateCommand();
             command1.CommandText = requete;
 
