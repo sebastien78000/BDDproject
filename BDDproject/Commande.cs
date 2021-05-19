@@ -339,5 +339,93 @@ namespace BDDproject
                 }                
             }
         }
+        public static void LireDataCommmande()
+        {
+            //Connexion
+           string connexionString = "SERVER=localhost;PORT=3306;" +
+                                                     "DATABASE=VeloMax;" +
+                                                     "UID=root;PASSWORD=root";
+            MySqlConnection maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+            // Liste des numéros de commande
+            string requete = $"select numeroCommande, numeroClient, date from velomax.commande order by numeroCommande;";
+            MySqlCommand command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            MySqlDataReader reader = command.ExecuteReader();
+            List<string> numeroCommandeList = new List<string>();
+            while (reader.Read())
+            {
+                numeroCommandeList.Add(reader.GetValue(0).ToString());
+                Console.WriteLine($"Numéro de commande : {reader.GetValue(0)}, Numéro Client : {reader.GetValue(1)}, Date : {reader.GetValue(2)}");
+            }
+            reader.Close();
+            command.Dispose();
+            //Selection numéro de commande
+            string numeroCommande = "";
+            while (!numeroCommandeList.Contains(numeroCommande))
+            {
+                Console.WriteLine("Veuillez entrer le numéro de la commande que vous souhaitez consulter");
+                numeroCommande = Console.ReadLine();
+                if (!numeroCommandeList.Contains(numeroCommande)) Console.WriteLine("Le numéro indiqué est incorrect");
+            }
+            // Détails de la commande
+            Console.WriteLine("\nDétails de commande :");
+            requete = $"select * from velomax.commande where numeroCommande = '{numeroCommande}';";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            List<string> commandeData = new List<string>();
+            reader.Read();
+            for (int i = 0; i < reader.FieldCount; i++) commandeData.Add(reader.GetValue(i).ToString());
+            reader.Close();
+            command.Dispose();
+            Console.WriteLine($"Numero commande : {commandeData[0]}");
+            Console.WriteLine($"Date de la commande : {commandeData[1]}");
+            Console.WriteLine($"Date de livraison : {commandeData[2]}");
+            Console.WriteLine($"Adresse de rue : {commandeData[3]}");
+            Console.WriteLine($"Ville : {commandeData[4]}");
+            Console.WriteLine($"Code postal : {commandeData[5]}");
+            Console.WriteLine($"Numéro du client associé : {commandeData[6]}");
+            // Détails des produits achetés
+            Console.WriteLine("\n Liste des vélos commandés");
+            requete = $"select mv.numeroModele, mv.nom, mv.prixUnitaire from velomax.commande_modelevelo cmv join velomax.modeleVelo mv on mv.numeroModele = cmv.numeroModele and mv.grandeur = cmv.grandeur where cmv.numeroCommande = '{numeroCommande}';";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            decimal prixTotal = 0;
+            while (reader.Read())
+            {
+                Console.WriteLine($"{reader.GetValue(0)} - {reader.GetValue(1)} - {reader.GetValue(2)} euros");
+                prixTotal += Convert.ToDecimal(reader.GetValue(2).ToString());
+            }
+            for (int i = 0; i < reader.FieldCount; i++) commandeData.Add(reader.GetValue(i).ToString());
+            reader.Close();
+            command.Dispose();
+            Console.WriteLine("\n Liste des pièces commandées");
+            requete = $"select mp.codeModelePiece, mp.description, mp.prixVenteUnitaire from velomax.commande_piece cp join velomax.modelePiece mp on mp.codeModelePiece = cp.codeModelePiece where cp.numeroCommande = '{numeroCommande}';";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                Console.WriteLine($"{reader.GetValue(0)} - {reader.GetValue(1)} - {reader.GetValue(2)} euros");
+                prixTotal += Convert.ToDecimal(reader.GetValue(2).ToString());
+            }
+            for (int i = 0; i < reader.FieldCount; i++) commandeData.Add(reader.GetValue(i).ToString());
+            Console.WriteLine($"\nPrix total : {prixTotal} euros");
+            reader.Close();
+            command.Dispose();
+            maConnexion.Close();
+        }
+        public static void SupprimerCommande()
+        {
+            string connexionString = "SERVER=localhost;PORT=3306;" +
+                                          "DATABASE=VeloMax;" +
+                                          "UID=root;PASSWORD=root";
+            MySqlConnection maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+
+            maConnexion.Close();
+        }
     }
 }

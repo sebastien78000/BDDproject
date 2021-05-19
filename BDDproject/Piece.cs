@@ -107,6 +107,74 @@ namespace BDDproject
             command.Dispose();
         }
 
+        public static void ModifierPiece()
+        {
+            // Connection
+            string connexionString = "SERVER=localhost;PORT=3306;" +
+                                         "DATABASE=VeloMax;" +
+                                         "UID=root;PASSWORD=root";
+            MySqlConnection maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+            // Modèlesde pièces référencés
+            string requete = "SELECT codeModelePiece FROM VeloMax.modelePiece;";
+            MySqlCommand command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            MySqlDataReader reader = command.ExecuteReader();
+            List<string> codeModelePieceList = new List<string>();
+            string valueString;
+            while (reader.Read())
+            {
+                valueString = reader.GetValue(0).ToString();
+                codeModelePieceList.Add(valueString);
+            }
+            reader.Close();
+            command.Dispose();
+            Console.WriteLine("Modèles de pièce référencés");
+            for (int i = 0; i < codeModelePieceList.Count; i++)
+            {
+                Console.WriteLine(codeModelePieceList[i]);
+            }
+            string codeModelePiece = "";
+            while (!codeModelePieceList.Contains(codeModelePiece))
+            {
+                Console.WriteLine("CodeModelePiece ?");
+                codeModelePiece = Console.ReadLine();
+                if (!codeModelePieceList.Contains(codeModelePiece)) Console.WriteLine("Modele pas dans la liste.\n");
+            }
+            // Modification
+            Console.WriteLine("Que voulez vous changer ? (1) Description (2) Prix de vente unitaire");
+            string choix = Console.ReadLine();
+            if (choix == "1")
+            {
+                Console.WriteLine("Veuillez entrer une nouvelle description pour la pièce");
+                string description = Console.ReadLine();
+                requete = $"update velomax.modelePiece set description = '{description}' where codeModelePiece = '{codeModelePiece}';";
+                command = maConnexion.CreateCommand();
+                command.CommandText = requete;
+                reader = command.ExecuteReader();
+                reader.Close();
+                command.Dispose();
+            }
+            else
+            {
+                decimal prix = -1;
+                while (prix < 0)
+                {
+                    Console.WriteLine("Veuillez entrer un nouveau prix pour la pièce (utilisez une virgule pas un point pour les centimes)");
+                    prix = Convert.ToDecimal(Console.ReadLine());
+                    if (prix < 0) Console.WriteLine("Veuillez entrer un prix correct");
+                }                
+                requete = $"update velomax.modelePiece set description = '{prix}' where codeModelePiece = '{codeModelePiece}';";
+                command = maConnexion.CreateCommand();
+                command.CommandText = requete;
+                reader = command.ExecuteReader();
+                reader.Close();
+                command.Dispose();
+            }
+            maConnexion.Close();
+
+        }
+
         public static void SupprimerPiece()
         {
             // Connection

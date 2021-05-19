@@ -11,8 +11,7 @@ namespace BDDproject
         static void Main(string[] args)
         {
 
-            Statistique.MeilleurClientEuros();
-
+            Piece.LireDataPiece();
             Console.ReadKey();
         }
 
@@ -120,7 +119,7 @@ namespace BDDproject
                         switch (choix2)
                         {
                             case 1:
-                                Commande.CreerCommande();
+                                Commande.Commander();
                                 break;
                             case 2:
                                 //Commande.SupprimerCommande();
