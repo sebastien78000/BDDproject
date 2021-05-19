@@ -110,17 +110,12 @@ namespace BDDproject
                                 Velo.AssemblerVelo(codeModeleVelo, grandeur);
                                 //creer commande si non existente
                                 //ajouter à commande_modelevelo 
-
-
                             }
                             else
                             {
                                 // donner delai pour obtenir piece
                                 Console.WriteLine($"Piece manquante, temps nécessaire pour obtenir pièce: {Velo.TempsNecessairePieceManquanteAssemblageVelo(codeModeleVelo,grandeur)}");
                             }
-
-
-
                         }
                         else
                         {
@@ -131,6 +126,7 @@ namespace BDDproject
 
                     case 2:
                         // piece desirée
+                        // recuperer liste des pieces
                         List<string> pieceExistante = new List<string>();
                         pieceExistante=Piece.PieceExistante();
                         string piece = "";
@@ -178,6 +174,7 @@ namespace BDDproject
                 if (fin == "O") finCommande = true;
 
             }
+
         }
 
 

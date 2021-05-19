@@ -224,7 +224,6 @@ namespace BDDproject
 
         }
 
-
         public static void LireDataAssemblage()
         {
             MySqlConnection maConnexion = null;
@@ -385,7 +384,6 @@ namespace BDDproject
             }
         }
 
-
         public static void LireDataVelo()
         {
             MySqlConnection maConnexion = null;
@@ -416,8 +414,7 @@ namespace BDDproject
             reader.Close();
             command1.Dispose();
         }
-
-        
+       
         public static bool PossibilititéAssemblerVelo(string codeModeleVelo, string grandeur)//à tester
         // renvoie true si le velo peut etre assemblé sinon renvoie faux
         {

@@ -231,7 +231,6 @@ namespace BDDproject
             command1.Dispose();
         }
 
-
         public static List<string> PieceExistante() //à tester
         // retourne la liste des pieces existantes dans le catalogue
         {
@@ -255,9 +254,6 @@ namespace BDDproject
             command.Dispose();
             return pieceListPossible;
         }
-
-        
-
 
         public static void LireDataPieceDispo()
         // renvoie le code modele piece des pieces disponiblers en stock
