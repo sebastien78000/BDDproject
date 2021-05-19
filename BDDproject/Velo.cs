@@ -252,7 +252,7 @@ namespace BDDproject
             command1.Dispose();
         }
 
-        public static void ModifierVelo()//à tester
+        public static void ModifierVelo()
         // modifier modele velo
         {
             // verifié si modele velo et grandeur fourni existe
@@ -412,7 +412,7 @@ namespace BDDproject
             command1.Dispose();
         }
        
-        public static bool PossibilititéAssemblerVelo(string codeModeleVelo, string grandeur)//à tester
+        public static bool PossibilititéAssemblerVelo(string codeModeleVelo, string grandeur)
         // renvoie true si le velo peut etre assemblé sinon renvoie faux
         {
             MySqlConnection maConnexion = null;

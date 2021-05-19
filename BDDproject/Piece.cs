@@ -203,6 +203,7 @@ namespace BDDproject
         }
 
         public static void AjouterPieceSansChoixCodeModele(string codeModelePiece)
+        
         {
             Console.WriteLine("Piece: " + codeModelePiece);
             string connexionString = "SERVER=localhost;PORT=3306;" +
