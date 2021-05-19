@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 using System.Xml;
 using MySql.Data.MySqlClient;
 using System.IO;
+using System.Diagnostics;
 
 namespace BDDproject
 {
     public class Export
     {
+        /// <summary>
+        ///  Export des stocks faibles avec fournisseurs pour command en XML 
+        /// </summary>
         public static void ExportXML()
-        // Export des stocks faibles avec fournisseurs pour command en XML 
         {
             MySqlConnection maConnexion = null;
             string connexionString = "SERVER=localhost;PORT=3306;" +
@@ -84,10 +87,13 @@ namespace BDDproject
             // enregistrement du document XML   ==> à retrouver dans le dossier bin\Debug de Visual Studio
             docXml.Save("./piece.xml");
             Console.WriteLine("fichier piece.xml créé");
+            Process.Start("piece.xml");
         }
 
 
-
+        /// <summary>
+        /// Export en JSON des clients dont le programme de fidélité arrive à expiration dans moins de 2 mois
+        /// </summary>
         public static void ExportJSON()
         {
             MySqlConnection maConnexion = null;
@@ -142,7 +148,7 @@ namespace BDDproject
                  sw.WriteLine(json);
             }
             Console.WriteLine("Fichier JSON créé");
-
+            Process.Start("clients.json");
 
 
 

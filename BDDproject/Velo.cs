@@ -9,6 +9,9 @@ namespace BDDproject
 {
     public class Velo
     {
+        /// <summary>
+        /// Permet d'ajouter un vélo dans la base de donnée
+        /// </summary>
         public static void CreerVelo()
         {
             // verifié si modele velo et grandeur fourni existe
@@ -166,6 +169,9 @@ namespace BDDproject
 
         }
 
+        /// <summary>
+        /// Permet de supprimer un vélo de la base de données en le désassemblant (les pièces deviennent libres)
+        /// </summary>
         public static void SupprimerVelo()
         // demonte un velo en liberant les pieces (possible seulement si le velo n est pas dans une commande)
         {
@@ -188,7 +194,7 @@ namespace BDDproject
             }
             reader.Close();
             command.Dispose();
-
+            Console.WriteLine();
             for (int i = 0; i < codeNumeroVeloList.Count; i++)
             {
                 Console.WriteLine(codeNumeroVeloList[i]);
@@ -197,12 +203,13 @@ namespace BDDproject
             while (!codeNumeroVeloList.Contains(NumeroVelo))
             {
                 Console.WriteLine("Numero Velo ?");
+                Console.WriteLine();
                 NumeroVelo = Console.ReadLine();
                 if (!codeNumeroVeloList.Contains(NumeroVelo)) Console.WriteLine("Numero pas dans la liste.\n");
             }
 
             // Demonter le velo en piece
-            requete = $"update VeloMax.piece set piece.numeroVelo=null and piece.vendu=false where numeroVelo='{NumeroVelo}';";
+            requete = $"update VeloMax.piece set piece.numeroVelo=null, piece.vendu=false where numeroVelo='{NumeroVelo}';";
             command = maConnexion.CreateCommand();
             command.CommandText = requete;
             reader = command.ExecuteReader();
@@ -221,6 +228,9 @@ namespace BDDproject
 
         }
 
+        /// <summary>
+        /// Permet d'afficher la liste d'assemblage d'un modèle
+        /// </summary>
         public static void LireDataAssemblage()
         {
             MySqlConnection maConnexion = null;
@@ -252,6 +262,10 @@ namespace BDDproject
             command1.Dispose();
         }
 
+
+        /// <summary>
+        /// Permet de modifier les informations d'un modèle de vélo
+        /// </summary>
         public static void ModifierVelo()
         // modifier modele velo
         {
@@ -381,6 +395,9 @@ namespace BDDproject
             }
         }
 
+        /// <summary>
+        /// Permet d'afficher les infos des vélos assemblés stockés
+        /// </summary>
         public static void LireDataVelo()
         {
             MySqlConnection maConnexion = null;
@@ -391,7 +408,7 @@ namespace BDDproject
             maConnexion = new MySqlConnection(connexionString);
             maConnexion.Open();
 
-            string requete = $"select * from veloMax.listeassemblage;";
+            string requete = $"select velo.numeroModele,modelevelo.nom,modelevelo.grandeur from veloMax.velo join velomax.modelevelo on velo.grandeur=modelevelo.grandeur and velo.numeroModele=modelevelo.numeroModele and velo.vendu=false;";
             MySqlCommand command1 = maConnexion.CreateCommand();
             command1.CommandText = requete;
 
@@ -411,7 +428,13 @@ namespace BDDproject
             reader.Close();
             command1.Dispose();
         }
-       
+
+        /// <summary>
+        /// détermine si un certain modèle de vélo peut-être monté à l'aide des pièces disponibles en stock
+        /// </summary>
+        /// <param name="codeModeleVelo">code modèle du vélo qu'on aimerait assembler</param>
+        /// <param name="grandeur">grandeur du vélo qu'on aimerait assembler</param>
+        /// <returns></returns>
         public static bool PossibilititéAssemblerVelo(string codeModeleVelo, string grandeur)
         // renvoie true si le velo peut etre assemblé sinon renvoie faux
         {
@@ -475,6 +498,11 @@ namespace BDDproject
 
         }
 
+        /// <summary>
+        /// Assemble un vélo à partir des piècezs en stock. Associe le numéro du vélo aux pièces utilisées et marque le vélo comme vendu.
+        /// </summary>
+        /// <param name="codeModeleVelo">code du modèle de vélo à monter</param>
+        /// <param name="grandeur">grandeur du vélo à monter</param>
         public static void AssemblerVelo(string codeModeleVelo,string grandeur)
         {
             MySqlConnection maConnexion = null;
@@ -540,8 +568,15 @@ namespace BDDproject
                 }
 
             }
-        }//à tester
+        }
 
+
+        /// <summary>
+        /// Permet de marquer comme vendues les pièces contenues dans un vélo lorsque celui-ci est vendu.
+        /// </summary>
+        /// <param name="numeroVelo">numéro du vélo vendu</param>
+        /// <param name="codeModeleVelo">code du modèle de vélo vendu</param>
+        /// <param name="grandeur">grandeur du vélo vendu</param>
         public static void VendrePiecesVelo(string numeroVelo, string codeModeleVelo, string grandeur)
         {
             MySqlConnection maConnexion = null;
@@ -586,6 +621,12 @@ namespace BDDproject
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="codeModeleVelo"></param>
+        /// <param name="grandeur"></param>
+        /// <returns></returns>
         public static string TempsNecessairePieceManquanteAssemblageVelo(string codeModeleVelo,string grandeur)
         {
             MySqlConnection maConnexion = null;
@@ -668,6 +709,6 @@ namespace BDDproject
             return Convert.ToString(tempsMin);
 
 
-        }//à tester
+        }
     }
 }

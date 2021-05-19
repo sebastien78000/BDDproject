@@ -14,6 +14,8 @@ namespace BDDproject
             Console.WriteLine("BONJOUR");
             Console.WriteLine("BIENVENUE SUR PROJET VELOMAX");
             Console.WriteLine();
+            Console.WriteLine("Entrer 'bozo' puis 'bozo' pour voir le demonstrateur");
+            Console.WriteLine("Entrer 'root' puis 'root' pour voir l'application");
             Console.WriteLine("Entrer nom utilisateur");
             string nomUtilisateur = Console.ReadLine();
             Console.WriteLine("Entrer mot de passe");
@@ -31,6 +33,9 @@ namespace BDDproject
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static void main()
         {
             bool quitter= true;
@@ -53,8 +58,9 @@ namespace BDDproject
                 {
                     case 1:
                         Console.WriteLine("Gestion pièces de rechange");
-                        Console.WriteLine("1: Creation pieces" +
-                        "2: Suppression pieces\n");
+                        Console.WriteLine("1: Creation pieces\n" +
+                            "2: Modification pièce\n"+
+                        "3: Suppression pieces\n");
                         int choix2= Convert.ToInt32(Console.ReadLine());
                         switch(choix2)
                         {
@@ -62,16 +68,22 @@ namespace BDDproject
                                 Piece.AjouterPiece();
                                 break;
                             case 2:
+                                Piece.ModifierPiece();
+                                break;
+                            case 3:
                                 Piece.SupprimerPiece();
+                                break;
+                            default:
                                 break;
                         }
                         break;
 
                     case 2:
                         Console.WriteLine("Gestion des velos");
-                        Console.WriteLine("1: Creation velo" +
+                        Console.WriteLine("1: Creation velo\n" +
                         "2: Suppression velo\n" +
-                        "3: Mise a jour velo\n");
+                        "3: Mise a jour velo\n" +
+                        "4: Lire data velos");
                         choix2 = Convert.ToInt32(Console.ReadLine());
                         switch (choix2)
                         {
@@ -84,15 +96,21 @@ namespace BDDproject
                             case 3:
                                 Velo.ModifierVelo();
                                 break;
+                            case 4:
+                                Velo.LireDataVelo();
+                                break;
+                            default:
+                                break;
                         }
                         break;
                         
 
                     case 3:
                         Console.WriteLine("Gestion des clients");
-                        Console.WriteLine("1: Creation client" +
+                        Console.WriteLine("1: Creation client\n" +
                         "2: Suppression client\n" +
-                        "3: Mise a jour client\n");
+                        "3: Mise a jour client\n" +
+                        "4: Lecture clients");
                         choix2 = Convert.ToInt32(Console.ReadLine());
                         switch (choix2)
                         {
@@ -105,14 +123,20 @@ namespace BDDproject
                             case 3:
                                 Client.ModifierClient();
                                 break;
+                            case 4:
+                                Client.LireDataClient();
+                                break;
+                            default:
+                                break;
                         }
                         break;
 
                     case 4:
                         Console.WriteLine("Gestion des fournisseurs");
-                        Console.WriteLine("1: Creation fournisseur" +
+                        Console.WriteLine("1: Creation fournisseur\n" +
                         "2: Suppression fournisseur\n" +
-                        "3: Mise a jour fournisseur\n");
+                        "3: Mise a jour fournisseur\n" +
+                        "4: Lire Data fournisseur\n");
                         choix2 = Convert.ToInt32(Console.ReadLine());
                         switch (choix2)
                         {
@@ -125,28 +149,39 @@ namespace BDDproject
                             case 3:
                                 Fournisseur.ModifDataFournisseur();
                                 break;
+                            case 4:
+                                Fournisseur.LireDataFournisseur();
+                                break;
+                            default:
+                                break;
                         }
                         break;
 
                     case 5:
                         Console.WriteLine("Gestion des commandes");
-                        Console.WriteLine("1: Creation commande");
+                        Console.WriteLine("1: Creation commande\n" +
+                            "2: Lire data commande");
                         choix2 = Convert.ToInt32(Console.ReadLine());
                         switch (choix2)
                         {
                             case 1:
                                 Commande.Commander();
                                 break;
- 
+                            case 2:
+                                Commande.LireDataCommmande();
+                                break;
+                            default:
+                                break;
+
                         }
                         break;
 
                     case 6:
                         Console.WriteLine("Gestion du stock");
-                        Console.WriteLine("1: par pièce" +
+                        Console.WriteLine("1: par pièce\n" +
                         "2: par fournisseur\n" +
                         "3: par velo\n" +
-                        "4: par categorie de velo");
+                        "4: par categorie de velo\n");
                         choix2 = Convert.ToInt32(Console.ReadLine());
                         switch (choix2)
                         {
@@ -162,17 +197,19 @@ namespace BDDproject
                             case 4:
                                 Stock.StockVeloCategorie();
                                 break;
+                            default:
+                                break;
                         }
                         break;
 
                     case 7:
                         
                         Console.WriteLine("Module statistique");
-                        Console.WriteLine("1: rapport statistique sur pieces et velos vendus" +
+                        Console.WriteLine("1: rapport statistique sur pieces et velos vendus\n" +
                         "2: Liste des membres pour chaque programme d'adhesion\n" +
                         "3: Date d'expiration des adhesions\n" +
                         "4: Meilleur(s) client(s)\n" +
-                        "5: Analyse des commandes");
+                        "5: Analyse des commandes\n");
                         choix2 = Convert.ToInt32(Console.ReadLine());
                         switch (choix2)
                         {
@@ -193,6 +230,8 @@ namespace BDDproject
                                 Statistique.MoyenneNombrePiecesParCommande();
                                 Statistique.MoyenneNombreVelosParCommande();
                                 break;
+                            default:
+                                break;
                         }
                         break;
 
@@ -208,6 +247,8 @@ namespace BDDproject
                                 break;
                             case 2:
                                 Export.ExportJSON();
+                                break;
+                            default:
                                 break;
                         }
                         break;
@@ -238,11 +279,13 @@ namespace BDDproject
 
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         public static void presentateur()
         {
             Console.WriteLine("Bonjour");
-            Console.WriteLine("Bienvenue dans la presentateur du projet VeloMax");
+            Console.WriteLine("Bienvenue dans le presentateur du projet VeloMax");
             Console.ReadKey();
             Console.Clear();
 
@@ -259,8 +302,9 @@ namespace BDDproject
             Console.Clear();
 
             // liste des produits ayant une quantite en stock inferieur ou egale à 2
-            Console.WriteLine("Liste des produits ayant une quantite en stock inferieur ou egale à 2");
+            Console.WriteLine("STOCK DES PIECES");
             Console.WriteLine();
+            Console.WriteLine("Liste des pieces ayant du stock en quantité suffisante (>2 pieces)");
             Presentateur.ListeDesProduitsQteInf2(); ;
             Console.ReadKey();
             Console.Clear();

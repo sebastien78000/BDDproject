@@ -10,6 +10,9 @@ namespace BDDproject
 {
     public static class Piece
     { 
+        /// <summary>
+        /// permet d'ajouter une pièce à partir du numéro de siret du fournisseur, du code modèle et du numéro de série
+        /// </summary>
         public static void AjouterPiece()
         {
             // Connection
@@ -107,6 +110,9 @@ namespace BDDproject
             command.Dispose();
         }
 
+        /// <summary>
+        /// Permet de modifier le prix unitaire de vente et la description d'un modèle de pièce
+        /// </summary>
         public static void ModifierPiece()
         {
             // Connection
@@ -175,6 +181,9 @@ namespace BDDproject
 
         }
 
+        /// <summary>
+        /// Permet de supprimer une piece non utilisée de la base de données
+        /// </summary>
         public static void SupprimerPiece()
         {
             // Connection
@@ -270,6 +279,10 @@ namespace BDDproject
 
         }
 
+        /// <summary>
+        /// Permet d'ajouter une pièce à la base de données avec un code modèle déjà fourni
+        /// </summary>
+        /// <param name="codeModelePiece"></param>
         public static void AjouterPieceSansChoixCodeModele(string codeModelePiece)
         
         {
@@ -354,6 +367,9 @@ namespace BDDproject
             command.Dispose();
         }
 
+        /// <summary>
+        /// Affiche les caractéristiques de toutes les pièces contenues dans la base de données.
+        /// </summary>
         public static void LireDataPiece()
         {
             MySqlConnection maConnexion = null;
@@ -385,7 +401,11 @@ namespace BDDproject
             command1.Dispose();
         }
 
-        public static List<string> PieceExistante() //à tester
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> PieceExistante()
         // retourne la liste des pieces existantes dans le catalogue
         {
             string connexionString = "SERVER=localhost;PORT=3306;" +
@@ -409,8 +429,11 @@ namespace BDDproject
             return pieceListPossible;
         }
 
+        /// <summary>
+        /// renvoie le code modele piece des pieces disponibles en stock
+        /// </summary>
         public static void LireDataPieceDispo()
-        // renvoie le code modele piece des pieces disponiblers en stock
+       
         {
             MySqlConnection maConnexion = null;
             string connexionString = "SERVER=localhost;PORT=3306;" +

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using System.Xml;
+using System.Diagnostics;
 
 namespace BDDproject
 {
@@ -15,7 +16,10 @@ namespace BDDproject
         // liste des produits ayant une quantite en stock inferieur ou egale à 2
         // Nombre de pièces et/ou velos fournis par le fournisseur
         // Export en XML
-
+        
+        /// <summary>
+        /// Affiche le nombre de clients dans la base de données
+        /// </summary>
         public static void NbClients()
         {
             
@@ -34,7 +38,7 @@ namespace BDDproject
                 valueString = reader.GetValue(0).ToString();
 
             }
-            Console.WriteLine($"Notre base de données se compose de:{valueString} clients");
+            Console.WriteLine($"Notre base de données se compose de {valueString} clients");
             reader.Close();
             command.Dispose();
             maConnexion.Close();
@@ -42,6 +46,9 @@ namespace BDDproject
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// Affiche les clients ainsi que le cumul de tout leur argent
+        /// </summary>
         public static void ClientEtCumulDesachats()
         {
             // somme des commandes de velos par client
@@ -132,7 +139,7 @@ namespace BDDproject
                 }
             }
             Console.WriteLine();
-            Console.WriteLine("Non de l'entreprise ou du particulier | dépenses cumulées");
+            Console.WriteLine("Nom de l'entreprise ou du particulier | dépenses cumulées");
             for(int i=0;i<final.Count();i++)
             {
                 // verifier compagnie ou personne
@@ -183,6 +190,9 @@ namespace BDDproject
 
         }
 
+        /// <summary>
+        /// Affiche la liste des produits vendus ainsi que si le nombre de chaque produit est inferieur ou non à 2.
+        /// </summary>
         public static void ListeDesProduitsQteInf2()
         {
             string connexionString = "SERVER=localhost;PORT=3306;" +
@@ -324,7 +334,7 @@ namespace BDDproject
                         {
                             VeloAcommander.Add(ModeleVelo[i]);
                         }
-                        else Console.WriteLine($"Quantité suffisante de {ModeleVelo[i][2]} {ModeleVelo[i][1]} exite en stock");
+                        else Console.WriteLine($"Quantité suffisante de {ModeleVelo[i][0]} : {ModeleVelo[i][2]} {ModeleVelo[i][1]} exite en stock");
                     }
                 }
                 if(test==false)
@@ -338,11 +348,14 @@ namespace BDDproject
             Console.WriteLine("Modeles de velos dont le stock assemblé est inferieur à 2:");
             for(int i=0;i<VeloAcommander.Count();i++)
             {
-                Console.WriteLine(VeloAcommander[i][2] + " " + VeloAcommander[i][1]);
+                Console.WriteLine(VeloAcommander[i][0]+" : "+ VeloAcommander[i][2] + " " + VeloAcommander[i][1]);
             }
 
         }
         
+        /// <summary>
+        /// Affiche les pieces fournies par chaque fournisseur
+        /// </summary>
         public static void NombrePiecesParFournisseur()
         {
             Console.WriteLine("Siret   |   Nom entreprise   |   Pièce fournie");
@@ -373,7 +386,9 @@ namespace BDDproject
         }
 
 
-
+        /// <summary>
+        /// Exporte la table fournisseur_modelepiece en xml
+        /// </summary>
         public static void ExportTableModelePiece()
         {
             MySqlConnection maConnexion = null;
@@ -437,17 +452,15 @@ namespace BDDproject
                 piece.AppendChild(prixAchat);
 
                 XmlElement delai = docXml.CreateElement("delaiApprovisionnement");
-                prixAchat.InnerText = $"{ListModelePiece[i][3]}";
+                delai.InnerText = $"{ListModelePiece[i][3]}";
                 piece.AppendChild(delai);
 
             }
 
 
-
-
-
             // enregistrement du document XML   ==> à retrouver dans le dossier bin\Debug de Visual Studio
             docXml.Save("./piece2.xml");
+            Process.Start("piece2.xml");
             Console.WriteLine("fichier piece.xml créé");
         }
     }

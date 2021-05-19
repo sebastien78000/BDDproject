@@ -9,7 +9,9 @@ namespace BDDproject
 {
     public static class Fournisseur
     {
-
+        /// <summary>
+        /// Permet de creer un fournisseur dans la base de données en fournissant obligatoirement un numero SIRET unique
+        /// </summary>
         public static void CreerFournisseur()
         {
 
@@ -48,7 +50,9 @@ namespace BDDproject
 
         }
 
-
+        /// <summary>
+        /// Permet de supprimer un fournisseur de la base de données en fournissant le numero SIRET de cette entreprise
+        /// </summary>
         public static void SupprimerFournisseur()
         {
             LireDataFournisseur();
@@ -71,7 +75,9 @@ namespace BDDproject
 
         }
 
-
+        /// <summary>
+        /// Permet d'afficher la liste de tous les fournisseurs contenus dans la table fournisseur
+        /// </summary>
         public static void LireDataFournisseur()
         {
             MySqlConnection maConnexion = null;
@@ -81,7 +87,7 @@ namespace BDDproject
 
             maConnexion = new MySqlConnection(connexionString);
             maConnexion.Open();
-
+            Console.WriteLine("Nom de l'entreprise | telephone | courriel | adresse | ville | Code postal | libelle");
             string requete = $"select * from veloMax.fournisseur;";
             MySqlCommand command1 = maConnexion.CreateCommand();
             command1.CommandText = requete;
@@ -95,7 +101,7 @@ namespace BDDproject
                 for (int i = 0; i < reader.FieldCount; i++)
                 {
                     valueString[i] = reader.GetValue(i).ToString();
-                    Console.Write(valueString[i] + " ");
+                    Console.Write(valueString[i] + " | ");
                 }
                 Console.WriteLine();
             }
@@ -103,6 +109,9 @@ namespace BDDproject
             command1.Dispose();
         }
 
+        /// <summary>
+        /// Permet de modifier toutes les données de la table exceptée le numero SIRET qui ne doit pas etre modifié
+        /// </summary>
         public static void ModifDataFournisseur()
         {
             MySqlConnection maConnexion = null;

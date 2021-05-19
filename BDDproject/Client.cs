@@ -9,7 +9,10 @@ namespace BDDproject
 {
     public static class Client
     {
-
+        /// <summary>
+        /// Cree un client dans la base de données en permettant de remplir tous les champs possibles
+        /// Permet aussi bien de creer les particuliers que les entreprises
+        /// </summary>
         public static void CreerClient()
         {
             MySqlConnection maConnexion = null;
@@ -86,6 +89,9 @@ namespace BDDproject
 
         }
 
+        /// <summary>
+        /// Permet de supprimer les clients de la base de données en utilisant leur numero client 
+        /// </summary>
         public static void SupprimerClient()
         {
             MySqlConnection maConnexion = null;
@@ -109,8 +115,13 @@ namespace BDDproject
 
         }
 
+        /// <summary>
+        /// Permet de modifier tous les champs d'un client à partie de leur numero client
+        /// Le numero client n'est pas modifiable
+        /// </summary>
         public static void ModifierClient()
         {
+            LireDataClient();
             Console.WriteLine("numero Client ?");
             string nClient = Console.ReadLine();
             LireDataClient();
@@ -339,8 +350,12 @@ namespace BDDproject
             
         }
 
+        /// <summary>
+        /// Permet d'afficher les données contenus dans la table client
+        /// </summary>
         public static void LireDataClient()
         {
+
             MySqlConnection maConnexion = null;
             string connexionString = "SERVER=localhost;PORT=3306;" +
                                          "DATABASE=VeloMax;" +
@@ -354,7 +369,7 @@ namespace BDDproject
             command1.CommandText = requete;
 
             MySqlDataReader reader = command1.ExecuteReader();
-
+            Console.WriteLine("numero client | nom | prenom | adresse | ville | code postal | telephone | couriel | societe | remise commerciale | numero programme fidelite | date adhesion");
             string[] valueString = new string[reader.FieldCount];
             while (reader.Read())
             {
@@ -362,7 +377,7 @@ namespace BDDproject
                 for (int i = 0; i < reader.FieldCount; i++)
                 {
                     valueString[i] = reader.GetValue(i).ToString();
-                    Console.Write(valueString[i] + " ");
+                    Console.Write(valueString[i] + " | ");
                 }
                 Console.WriteLine();
             }

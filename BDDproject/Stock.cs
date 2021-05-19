@@ -10,6 +10,9 @@ namespace BDDproject
     // Les stocks pour les velos ne prennent en compte que les vélos deja assemblés !!!!!!!!!!!!
     public static class Stock
     {
+        /// <summary>
+        /// Affiche les caractéristiques des pièces en stock
+        /// </summary>
         public static void StockPieces()
         // pieces ni engagés dans un velo ni vendu
         {
@@ -39,6 +42,9 @@ namespace BDDproject
             command.Dispose();
         }
 
+        /// <summary>
+        /// Affiche les pièces en stock et leur fournisseur triées par fournisseur
+        /// </summary>
         public static void StockPiecesFournisseur()
         // pieces libres tries par fournisseur
         {
@@ -98,6 +104,9 @@ namespace BDDproject
 
         }
 
+        /// <summary>
+        /// Affiche les carastéristiques des vélos en stock
+        /// </summary>
         public static void StockVelos()
         // velos deja assemblés mais pas encore vendus
         {
@@ -127,6 +136,9 @@ namespace BDDproject
             command.Dispose();
         }
 
+        /// <summary>
+        /// Affiche les carastéristiques des vélos stockés groupés par ligne de produit
+        /// </summary>
         public static void StockVeloCategorie() 
         //nb velos en fonction de leur ligne produit
         {
@@ -156,9 +168,10 @@ namespace BDDproject
             command.Dispose();
         }
 
+        /// <summary>
+        /// Ajoute des pièces dans la base de données si celles-ci sont en trop faibles quantité ( < 2 pièces) 
+        /// </summary>
         public static void AnalyserStockEtCreerPieceFaibleQuantite()
-        // cree des pieces lorsque le compte de pieces en stock est trop faible
-        // considere pieces faibles quand nb pieces dispo est égale à 0 ou 1
         {
             string connexionString = "SERVER=localhost;PORT=3306;" +
                                        "DATABASE=VeloMax;" +
@@ -253,6 +266,10 @@ namespace BDDproject
 
         }
 
+        /// <summary>
+        /// affiche la liste des pièces non utilisées et non vendues
+        /// </summary>
+        /// <returns></returns>
         public static List<string> PiecesDisponibles()
         {
             string connexionString = "SERVER=localhost;PORT=3306;" +

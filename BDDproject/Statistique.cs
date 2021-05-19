@@ -9,8 +9,10 @@ namespace BDDproject
 {
     public class Statistique
     {
+        /// <summary>
+        /// affiche les membres du programme de fidelite choisi
+        /// </summary>
         public static void  ListeMembreProgrammeAdhesionAvecChoix()
-        // affiche les membres du programme de fidelite choisi
         {
             string connexionString = "SERVER=localhost;PORT=3306;" +
                                          "DATABASE=VeloMax;" +
@@ -65,6 +67,9 @@ namespace BDDproject
             command.Dispose();
         }
 
+        /// <summary>
+        /// affiche les membres d'un programme de fidelité et le programme auquel ils ont souscrit
+        /// </summary>
         public static void ListeMembreProgrammeAdhesion()
         // affiche tous les membres du programme de fidelite
         {
@@ -76,6 +81,7 @@ namespace BDDproject
             MySqlConnection maConnexion = new MySqlConnection(connexionString);
             maConnexion.Open();
 
+            Console.WriteLine("prenom | nom | programme d'adhesion");
             string requete = $"SELECT  prenom, nom,description FROM VeloMax.client join programmefidelite on client.numeroProgramme=programmefidelite.numeroProgramme order by programmefidelite.numeroProgramme;";
             MySqlCommand command = maConnexion.CreateCommand();
             command.CommandText = requete;
@@ -95,6 +101,9 @@ namespace BDDproject
             command.Dispose();
         }
 
+        /// <summary>
+        /// Affiche le nom, prenom, programme d'ahesion, la date d'adhesion et la date de fin d'adhesion des membres des programmes de fidelite
+        /// </summary>
         public static void DateExpirationProgrammesFideliteParClient()
         // affiche chaque membre du programme de fidelite avec son prenom,son nom, la date d'adhesion et la date d'expiration de son programme
         {
@@ -105,7 +114,7 @@ namespace BDDproject
 
             MySqlConnection maConnexion = new MySqlConnection(connexionString);
             maConnexion.Open();
-            Console.WriteLine("prenom | nom | date d'adhesion programme | date d'expiration programme");
+            Console.WriteLine("prenom | nom | programme d'adhesion | date d'adhesion programme | date d'expiration programme");
             string requete = $"SELECT  prenom, nom,description,client.dateAdhesion,DATE_ADD(client.dateAdhesion,INTERVAL programmeFidelite.dureeMois MONTH ) FROM VeloMax.client join programmefidelite on client.numeroProgramme=programmefidelite.numeroProgramme order by programmefidelite.numeroProgramme;";
             MySqlCommand command = maConnexion.CreateCommand();
             command.CommandText = requete;
@@ -125,9 +134,11 @@ namespace BDDproject
             command.Dispose();
         }
 
-
+        /// <summary>
+        /// Affiche les quantites vendues de chaque item qui se trouve dans l inventaire
+        /// </summary>
         public static void QtesVendues()
-        // quantites vendues de chaque item qui se trouve dans l inventaire
+        
         {
             // pieces vendues par categorie de piece
             string connexionString = "SERVER=localhost;PORT=3306;" +
@@ -272,9 +283,10 @@ namespace BDDproject
 
         }
 
-
+        /// <summary>
+        /// Affiche le ou les meilleurs clients en fonction de la quantité cumulé d'argent des commandes
+        /// </summary>
         public static void MeilleurClientEuros()
-        // affiche le ou les meilleurs clients
         {
             // somme des commandes de velos par client
             string connexionString = "SERVER=localhost;PORT=3306;" +
@@ -415,8 +427,10 @@ namespace BDDproject
                         {
                             valuesString[j] = reader.GetValue(j).ToString();
                             Console.Write(valuesString[j]+ " ");
+                            
                         }
                         Console.WriteLine();
+                        Console.WriteLine(max + " euros d'achat");
                     }
                     reader.Close();
                     command.Dispose();
@@ -424,6 +438,7 @@ namespace BDDproject
                 else
                 {
                     Console.WriteLine($"Entreprise: {valueString2}");
+                    Console.WriteLine(max + " euros d'achat");
                 }
 
             }
@@ -432,9 +447,10 @@ namespace BDDproject
 
         }
 
-
+        /// <summary>
+        /// Affiche le nombre moyen de pieces commandeés par commande
+        /// </summary>
         public static void MoyenneNombrePiecesParCommande()
-        // affiche la moyenne du nombre de pieces par commande
         {
             string connexionString = "SERVER=localhost;PORT=3306;" +
                                         "DATABASE=VeloMax;" +
@@ -460,9 +476,10 @@ namespace BDDproject
             Console.WriteLine($"Nombre de pieces moyennes par commande: {moyenne}");
         }
 
-
+        /// <summary>
+        /// Affiche le nombre moyen de pieces commandé par commande
+        /// </summary>
         public static void MoyenneNombreVelosParCommande()
-        // affiche la moyenne du nombre de velos par commande
         {
             string connexionString = "SERVER=localhost;PORT=3306;" +
                                         "DATABASE=VeloMax;" +
@@ -488,9 +505,10 @@ namespace BDDproject
             Console.WriteLine($"Nombre de velos moyens par commande: {moyenne}");
         }
 
-
+        /// <summary>
+        /// Affiche la moyene des montants des commandes
+        /// </summary>
         public static void MoyenneMontantCommande()
-        // moyenne montant par commande
         {
             // somme des commandes de velos par commande
             string connexionString = "SERVER=localhost;PORT=3306;" +

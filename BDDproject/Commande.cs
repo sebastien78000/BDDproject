@@ -9,6 +9,9 @@ namespace BDDproject
 {
     public class Commande
     {
+        /// <summary>
+        /// Permet de remplir un panier de produits contenant aussi bien des pieces que des velos puis de remplir la base de données avec ces informations
+        /// </summary>
         public static void Commander()
         {
             bool finCommande = false;
@@ -27,7 +30,7 @@ namespace BDDproject
                 if (panierPieces.Count() > 0)
                 {
                     Console.WriteLine("\nPièces commandées :");
-                    for (int i = 0; i < panierVelos.Count(); i++) Console.WriteLine($"Modèle commandé : {panierPieces[i]}");
+                    for (int i = 0; i < panierPieces.Count(); i++) Console.WriteLine($"Modèle commandé : {panierPieces[i]}");
                 }
                 Console.WriteLine($"\nPrix total : {prixTotal} euros");
                 Console.WriteLine($"Délai de {maxDelai} jours avant expédition");
@@ -332,6 +335,34 @@ namespace BDDproject
                         reader = command.ExecuteReader();
                         reader.Close();
                         command.Dispose();
+                        // Ajout des vélos et des pièces dans les tables entité-association
+                        requete = $"select max(numeroCommande) from velomax.commande;";
+                        command = maConnexion.CreateCommand();
+                        command.CommandText = requete;
+                        reader = command.ExecuteReader();
+                        reader.Read();
+                        string numeroCommande = reader.GetValue(0).ToString();
+                        reader.Close();
+                        command.Dispose();
+                        for (int i = 0; i < panierVelos.Count(); i++)
+                        {
+                            requete = $"INSERT INTO velomax.commande_modeleVelo (numeroCommande, numeroModele, grandeur) VALUES ('{numeroCommande}','{panierVelos[i][0]}','{panierVelos[i][1]}');";
+                            command = maConnexion.CreateCommand();
+                            command.CommandText = requete;
+                            reader = command.ExecuteReader();
+                            reader.Close();
+                            command.Dispose();
+                        }
+                        for (int i = 0; i < panierPieces.Count(); i++)
+                        {
+                            requete = $"INSERT INTO velomax.commande_piece (numeroCommande, codeModelePiece) VALUES ('{numeroCommande}','{panierPieces[i]}');";
+                            command = maConnexion.CreateCommand();
+                            command.CommandText = requete;
+                            reader = command.ExecuteReader();
+                            reader.Close();
+                            command.Dispose();
+                        }
+
                         finCommande = true;
                         maConnexion.Close();
                         Console.WriteLine("Commande réussie\n\n");
@@ -339,6 +370,10 @@ namespace BDDproject
                 }                
             }
         }
+
+        /// <summary>
+        /// Permet de lire le contenu de chaque commande de la base de données
+        /// </summary>
         public static void LireDataCommmande()
         {
             //Connexion
@@ -398,7 +433,7 @@ namespace BDDproject
                 Console.WriteLine($"{reader.GetValue(0)} - {reader.GetValue(1)} - {reader.GetValue(2)} euros");
                 prixTotal += Convert.ToDecimal(reader.GetValue(2).ToString());
             }
-            for (int i = 0; i < reader.FieldCount; i++) commandeData.Add(reader.GetValue(i).ToString());
+            //for (int i = 0; i < reader.FieldCount; i++) commandeData.Add(reader.GetValue(i).ToString());
             reader.Close();
             command.Dispose();
             Console.WriteLine("\n Liste des pièces commandées");
@@ -411,21 +446,13 @@ namespace BDDproject
                 Console.WriteLine($"{reader.GetValue(0)} - {reader.GetValue(1)} - {reader.GetValue(2)} euros");
                 prixTotal += Convert.ToDecimal(reader.GetValue(2).ToString());
             }
-            for (int i = 0; i < reader.FieldCount; i++) commandeData.Add(reader.GetValue(i).ToString());
+            //for (int i = 0; i < reader.FieldCount; i++) commandeData.Add(reader.GetValue(i).ToString());
             Console.WriteLine($"\nPrix total : {prixTotal} euros");
             reader.Close();
             command.Dispose();
             maConnexion.Close();
         }
-        public static void SupprimerCommande()
-        {
-            string connexionString = "SERVER=localhost;PORT=3306;" +
-                                          "DATABASE=VeloMax;" +
-                                          "UID=root;PASSWORD=root";
-            MySqlConnection maConnexion = new MySqlConnection(connexionString);
-            maConnexion.Open();
 
-            maConnexion.Close();
-        }
+
     }
 }
