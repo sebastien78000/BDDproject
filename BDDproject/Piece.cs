@@ -95,7 +95,7 @@ namespace BDDproject
             {
                 Console.WriteLine("noSerie ?");
                 noSerie = Console.ReadLine();
-                if (siretList.Contains(siret)) Console.WriteLine("Ce numéro est déjà utilisé, veuillez en sélectionner un autre\n");
+                if (noSerieList.Contains(noSerie)) Console.WriteLine("Ce numéro est déjà utilisé, veuillez en sélectionner un autre\n");
             }
             // Ajouter pièce
             string donnees = $"'{noSerie}','{codeModelePiece}','{siret}'";
@@ -105,6 +105,101 @@ namespace BDDproject
             reader = command.ExecuteReader();
             reader.Close();
             command.Dispose();
+        }
+
+        public static void SupprimerPiece()
+        {
+            // Connection
+            string connexionString = "SERVER=localhost;PORT=3306;" +
+                                         "DATABASE=VeloMax;" +
+                                         "UID=root;PASSWORD=root";
+            MySqlConnection maConnexion = new MySqlConnection(connexionString);
+            maConnexion.Open();
+            // Code Modele
+            string requete = "SELECT distinct codeModelePiece FROM VeloMax.piece WHERE vendu = false and numeroVelo is NULL;";
+            MySqlCommand command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            MySqlDataReader reader = command.ExecuteReader();
+            List<string> codeModelePieceList = new List<string>();
+            string valueString;
+            while (reader.Read())
+            {
+                valueString = reader.GetValue(0).ToString();
+                codeModelePieceList.Add(valueString);
+            }
+            reader.Close();
+            command.Dispose();
+            Console.WriteLine("Modèles de pièce en stock :");
+            for (int i = 0; i < codeModelePieceList.Count; i++)
+            {
+                Console.WriteLine(codeModelePieceList[i]);
+            }
+
+            string codeModelePiece = "";
+            while (!codeModelePieceList.Contains(codeModelePiece))
+            {
+                Console.WriteLine("CodeModelePiece ?");
+                codeModelePiece = Console.ReadLine();
+                if (!codeModelePieceList.Contains(codeModelePiece)) Console.WriteLine("Modele pas dans la liste.\n");
+            }
+            // Siret
+            requete = $"SELECT distinct numeroSiretFournisseur FROM VeloMax.piece where codeModelePiece = '{codeModelePiece}' and vendu = false and numeroVelo is NULL;";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            List<string> siretList = new List<string>();
+            while (reader.Read())
+            {
+                valueString = reader.GetValue(0).ToString();
+                siretList.Add(valueString);
+            }
+            reader.Close();
+            command.Dispose();
+            Console.WriteLine("Numéros Siret des fournisseurs des pièces en stock pour le modèle:");
+            for (int i = 0; i < siretList.Count; i++)
+            {
+                Console.WriteLine(siretList[i]);
+            }
+            string siret = "";
+            while (!siretList.Contains(siret))
+            {
+                Console.WriteLine("Siret ?");
+                siret = Console.ReadLine();
+                if (!siretList.Contains(siret)) Console.WriteLine("Le fournisseur ne fournit pas le modèle.\n");
+            }
+            // Numéro Série
+            requete = $"SELECT distinct numeroSerie FROM VeloMax.piece where codeModelePiece = '{codeModelePiece}' and numeroSiretFournisseur = '{siret}' and vendu = false and numeroVelo is NULL;";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            List<string> noSerieList = new List<string>();
+            while (reader.Read())
+            {
+                valueString = reader.GetValue(0).ToString();
+                noSerieList.Add(valueString);
+            }
+            reader.Close();
+            command.Dispose();
+            Console.WriteLine("Numéros série en stock pour ce modèle et ce fournisseur :");
+            for (int i = 0; i < noSerieList.Count; i++)
+            {
+                Console.WriteLine(noSerieList[i]);
+            }
+            string noSerie = "";
+            while (!noSerieList.Contains(noSerie))
+            {
+                Console.WriteLine("noSerie ?");
+                noSerie = Console.ReadLine();
+                if (!noSerieList.Contains(noSerie)) Console.WriteLine("Numéro pas dans la liste.\n");
+            }
+            // Supprimer piece
+            requete = $"DELETE FROM VeloMax.piece where codeModelePiece = '{codeModelePiece}' and numeroSiretFournisseur = '{siret}' and numeroSerie = '{noSerie}';";
+            command = maConnexion.CreateCommand();
+            command.CommandText = requete;
+            reader = command.ExecuteReader();
+            reader.Close();
+            command.Dispose();
+
         }
 
         public static void AjouterPieceSansChoixCodeModele(string codeModelePiece)
@@ -188,16 +283,6 @@ namespace BDDproject
             reader = command.ExecuteReader();
             reader.Close();
             command.Dispose();
-        }
-
-        public static void SupprimerPiece()
-        {
-            // Connection
-            string connexionString = "SERVER=localhost;PORT=3306;" +
-                                         "DATABASE=VeloMax;" +
-                                         "UID=root;PASSWORD=root";
-            MySqlConnection maConnexion = new MySqlConnection(connexionString);
-            maConnexion.Open();
         }
 
         public static void LireDataPiece()
