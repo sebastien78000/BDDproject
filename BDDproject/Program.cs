@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace BDDproject
 {
@@ -10,8 +11,23 @@ namespace BDDproject
     {
         static void Main(string[] args)
         {
-
-            Piece.LireDataPiece();
+            Console.WriteLine("BONJOUR");
+            Console.WriteLine("BIENVENUE SUR PROJET VELOMAX");
+            Console.WriteLine();
+            Console.WriteLine("Entrer nom utilisateur");
+            string nomUtilisateur = Console.ReadLine();
+            Console.WriteLine("Entrer mot de passe");
+            string mdp = Console.ReadLine();
+            if (mdp == "root" && nomUtilisateur == "root")
+            {
+                Console.Clear();
+                main();
+            }
+            else
+            {
+                Console.Clear();
+                presentateur();
+            }
             Console.ReadKey();
         }
 
@@ -20,6 +36,8 @@ namespace BDDproject
             bool quitter= true;
             while(quitter==true)
             {
+                Console.WriteLine("Projet VeloMax");
+                Console.WriteLine("MENU");
                 Console.WriteLine("1: Gestion des pieces de rechange\n" +
                "2: Gestions des Velos\n" +
                "3: Gestion des clients\n" +
@@ -112,20 +130,14 @@ namespace BDDproject
 
                     case 5:
                         Console.WriteLine("Gestion des commandes");
-                        Console.WriteLine("1: Creation commande" +
-                        "2: Suppression commande\n" +
-                        "3: Mise a jour fournisseur\n");
+                        Console.WriteLine("1: Creation commande");
                         choix2 = Convert.ToInt32(Console.ReadLine());
                         switch (choix2)
                         {
                             case 1:
                                 Commande.Commander();
                                 break;
-                            case 2:
-                                //Commande.SupprimerCommande();
-                                break;
-                            case 3:
-                                break;
+ 
                         }
                         break;
 
@@ -205,18 +217,22 @@ namespace BDDproject
                         break;
                 }
 
-                Console.WriteLine("Souhaitez vous quitter l'application ? oui ou non");
                 string reponse = "";
-                while (reponse!="oui" || reponse!="nom")
+                while (reponse!="oui" && reponse!="non")
                 {
+
+                    Console.WriteLine("Souhaitez vous quitter l'application ? oui ou non");
                     reponse = Console.ReadLine();
                     if (reponse == "oui")
                     {
                         quitter = false;
                     }
+                    Console.Clear();
                 }
                
             }
+            Console.WriteLine("Merci d'avoir utilisé le projet VeloMax");
+            Console.WriteLine("Aurevoir");
            
         }
 
@@ -225,6 +241,41 @@ namespace BDDproject
 
         public static void presentateur()
         {
+            Console.WriteLine("Bonjour");
+            Console.WriteLine("Bienvenue dans la presentateur du projet VeloMax");
+            Console.ReadKey();
+            Console.Clear();
+
+            // nombre de clients
+            Console.WriteLine("Nombre de clients dans la base de données");
+            Presentateur.NbClients();
+            Console.ReadKey();
+            Console.Clear();
+
+            // client+cumul de leurs achats
+            Console.WriteLine("Clients avec cumul de leurs achats");
+            Presentateur.ClientEtCumulDesachats(); ;
+            Console.ReadKey();
+            Console.Clear();
+
+            // liste des produits ayant une quantite en stock inferieur ou egale à 2
+            Console.WriteLine("Liste des produits ayant une quantite en stock inferieur ou egale à 2");
+            Console.WriteLine();
+            Presentateur.ListeDesProduitsQteInf2(); ;
+            Console.ReadKey();
+            Console.Clear();
+
+            // Nombre de pièces et/ou velos fournis par le fournisseur
+            Console.WriteLine("Pieces fournies par chaque fournisseur");
+            Presentateur.NombrePiecesParFournisseur();
+            Console.ReadKey();
+            Console.Clear();
+
+            // Export en XML
+            Console.WriteLine("Export");
+            Presentateur.ExportTableModelePiece();
+            Export.ExportJSON();
+            Console.ReadKey();
 
         }
     }

@@ -91,6 +91,7 @@
     <Compile Include="Client.cs" />
     <Compile Include="Commande.cs" />
     <Compile Include="Fournisseur.cs" />
+    <Compile Include="Presentateur.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Statistique.cs" />

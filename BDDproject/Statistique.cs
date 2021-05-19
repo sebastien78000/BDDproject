@@ -66,7 +66,7 @@ namespace BDDproject
         }
 
         public static void ListeMembreProgrammeAdhesion()
-        // affiche tous les membres a
+        // affiche tous les membres du programme de fidelite
         {
             string connexionString = "SERVER=localhost;PORT=3306;" +
                                          "DATABASE=VeloMax;" +
@@ -276,14 +276,14 @@ namespace BDDproject
         public static void MeilleurClientEuros()
         // affiche le ou les meilleurs clients
         {
-            // somme des commandes de velos par commande
+            // somme des commandes de velos par client
             string connexionString = "SERVER=localhost;PORT=3306;" +
                                         "DATABASE=VeloMax;" +
                                         "UID=root;PASSWORD=root";
 
             MySqlConnection maConnexion = new MySqlConnection(connexionString);
             maConnexion.Open();
-            string requete = $"select cmv.numeroCommande,sum(mv.prixUnitaire) from velomax.commande_modelevelo cmv join velomax.modelevelo mv on cmv.numeroModele = mv.numeroModele and cmv.grandeur = mv.grandeur group by cmv.numeroCommande;";
+            string requete = $"select co.numeroClient,sum(mv.prixUnitaire) from velomax.commande co join velomax.commande_modelevelo cmv on co.numeroCommande=cmv.numeroCommande join velomax.modelevelo mv on cmv.numeroModele = mv.numeroModele and cmv.grandeur = mv.grandeur group by co.numeroClient;";
             MySqlCommand command = maConnexion.CreateCommand();
             command.CommandText = requete;
             MySqlDataReader reader = command.ExecuteReader();
@@ -302,8 +302,8 @@ namespace BDDproject
             reader.Close();
             command.Dispose();
 
-            // somme des commandes de pieces par commande
-            requete = $"select cp.numeroCommande,sum(mp.prixVenteUnitaire) from velomax.commande_piece cp join velomax.modelepiece mp on mp.codeModelePiece = cp.codeModelePiece  group by cp.numeroCommande;";
+            // somme des commandes de pieces par client
+            requete = $"select co.numeroClient,sum(mp.prixVenteUnitaire) from  velomax.commande co join velomax.commande_piece cp on co.numeroCommande=cp.numeroCommande  join velomax.modelepiece mp on mp.codeModelePiece = cp.codeModelePiece  group by co.numeroClient;";
             command = maConnexion.CreateCommand();
             command.CommandText = requete;
             reader = command.ExecuteReader();
@@ -363,7 +363,7 @@ namespace BDDproject
                     final.Add(temp);
                 }
             }
-
+            
             // obtenir les numeros clients du ou des plus grands acheteurs
             List<double> acheteurs = new List<double>();
             double max = 0;
@@ -427,7 +427,7 @@ namespace BDDproject
                 }
 
             }
-
+            
 
 
         }

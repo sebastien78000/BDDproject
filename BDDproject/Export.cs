@@ -82,7 +82,7 @@ namespace BDDproject
 
 
             // enregistrement du document XML   ==> à retrouver dans le dossier bin\Debug de Visual Studio
-            docXml.Save("C:\\Users\\Sébastien\\Desktop\\piece.xml");
+            docXml.Save("./piece.xml");
             Console.WriteLine("fichier piece.xml créé");
         }
 
@@ -137,11 +137,11 @@ namespace BDDproject
                 
             }
 
-            using (StreamWriter sw = new StreamWriter("C:\\Users\\Sébastien\\Desktop\\clients.json"))
+            using (StreamWriter sw = new StreamWriter("./clients.json"))
             {               
                  sw.WriteLine(json);
             }
-            Console.WriteLine("Fichier créé");
+            Console.WriteLine("Fichier JSON créé");
 
 
 
